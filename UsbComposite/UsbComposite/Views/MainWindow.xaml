@@ -1,0 +1,153 @@
+﻿<Window x:Class="UsbComposite.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UsbComposite"
+        xmlns:models="clr-namespace:UsbComposite.Models"
+        xmlns:vm="clr-namespace:UsbComposite.Viewmodels"  
+        xmlns:helpers="clr-namespace:UsbComposite.Helpers"
+        mc:Ignorable="d"
+        Title="UC-Link" Height="600" Width="1060">
+    <!-- 🎨 Resources -->
+    <Window.Resources>
+        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="TabSelectedBrush" Color="#738A9C"/>
+        <SolidColorBrush x:Key="TabHoverBrush" Color="#3D566E"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="White"/>
+        <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="Black"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
+            <StackPanel>
+                <TextBlock Text="Hoang's device"
+                           Foreground="White"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Margin="0,20,0,10"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"/>
+
+                <!-- TabControl with custom layout -->
+                <TabControl x:Name="SidebarTabControl"
+                            SelectionChanged="SidebarTabControl_SelectionChanged"
+                            TabStripPlacement="Left"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            FontSize="13"
+                            FontWeight="Bold">
+
+                    <!-- TabItem style -->
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Height" Value="60"/>
+                            <Setter Property="Width" Value="200"/>
+                            <Setter Property="Padding" Value="10,0,0,0"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabItem}">
+                                        <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                                            <Border x:Name="tabItemBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Margin="0,0,0,0">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  ContentSource="Header"
+                                                                  RecognizesAccessKey="True"
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource SidebarBackgroundBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource TabSelectedBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabSelectedForegroundBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource TabHoverBrush}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                                <Setter TargetName="tabItemBorder" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+
+                    <!-- TabItems with icon + text -->
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="Images/device.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Connect device" VerticalAlignment="Center" FontSize="14"/>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="Images/uart.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Comport" VerticalAlignment="Center" FontSize="14"/>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="Images/hid.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="DignosticCan" VerticalAlignment="Center" FontSize="14"/>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="Images/info.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Device information" VerticalAlignment="Center" FontSize="14"/>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="Images/help.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Help" VerticalAlignment="Center" FontSize="14"/>
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                </TabControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Main content area -->
+        <ContentControl x:Name="MainContentArea" Grid.Column="1" Background="LightYellow"/>
+    </Grid>
+</Window>

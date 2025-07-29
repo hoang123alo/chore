@@ -1,0 +1,195 @@
+﻿<UserControl x:Class="UsbComposite.Views.UsbComportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             Background="#738A9C">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+
+        <!-- Gửi từng dòng -->
+        <GroupBox Grid.Row="0" Grid.Column="0"
+                  Header="Gửi từng dòng"
+                  Margin="10,0,10,10"
+                  BorderBrush="#738A9C"
+                  BorderThickness="0" FontSize="14" FontWeight="Bold">
+
+            <Border BorderThickness="2" BorderBrush="#E0E0E0" Margin="2" CornerRadius="5">
+                <DataGrid x:Name="dgCdcSend"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="True"
+                          CanUserDeleteRows="True"
+                          HeadersVisibility="Column"
+                          SelectionMode="Single"
+                          ItemsSource="{Binding CdcVM.FramesToSend}"  
+                          Foreground ="White" FontSize="12" BorderBrush="#738A9C" 
+                          GridLinesVisibility="All" Background="#FFF0F0F0" FontWeight="Normal">
+                    <DataGrid.Resources>
+
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#2C3E50"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#2C3E50"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Data" 
+                                            Binding="{Binding DataString, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="*" 
+                                            Foreground ="Black"/>
+                        <DataGridTemplateColumn Header="Type" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox SelectedValue="{Binding DataType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              SelectedValuePath="Content">
+                                        <ComboBoxItem Content="ASCII" />
+                                        <ComboBoxItem Content="Hex" />
+                                        <ComboBoxItem Content="Dec" />
+                                    </ComboBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <ComboBox SelectedValue="{Binding DataType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              SelectedValuePath="Content">
+                                        <ComboBoxItem Content="ASCII" />
+                                        <ComboBoxItem Content="Hex" />
+                                        <ComboBoxItem Content="Dec" />
+                                    </ComboBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Gửi" Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Gửi"
+                                            Background="#2C3E50"
+                                            Foreground ="White"
+                                            Command="{Binding DataContext.CdcVM.SendCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding DataContext.CdcVM.IsSerialOpen, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </GroupBox>
+
+        <!-- Tùy chọn gửi -->
+        <Border Grid.Row="0" Grid.Column="1"
+                Margin="5,25,0,20"
+                BorderBrush="#2C3E50" BorderThickness="1" CornerRadius="3"
+                Background="#2C3E50">
+            <GroupBox Header="Tùy chọn gửi" Margin="10" BorderThickness="0" Foreground ="White" FontSize="14" FontWeight="Bold">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Content="CR (Carriage Return)"
+                              Foreground ="White"
+                              Margin="0,10,0,5"
+                              IsChecked="{Binding CdcVM.AppendCR}" FontSize="12" FontWeight="Normal" />
+                    <CheckBox Content="LF (Line Feed)"
+                              Foreground ="White"
+                              Margin="0,10,10,10"
+                              FontSize="12"
+                              IsChecked="{Binding CdcVM.AppendLF}" FontWeight="Normal" />
+                    <Button Content="Gửi file"
+                            Command="{Binding CdcVM.SendFileCommand}"
+                            IsEnabled="{Binding CdcVM.IsSerialOpen}"
+                            Background="#2C3E50"
+                            FontSize="12"
+                            Foreground ="White"
+                            Width="100"
+                            Margin="0,10,0,0"
+                            HorizontalAlignment="Left" FontWeight="Normal"/>
+                    
+                    <TextBlock Text="{Binding CdcVM.LastSentFileName}"
+                               Margin="0,5,0,0"
+                               FontSize="12"/>
+                </StackPanel>
+            </GroupBox>
+        </Border>
+
+        <!-- Nhận dữ liệu -->
+        <GroupBox Grid.Row="1" Grid.Column="0"
+                  Header="Nhận dữ liệu"
+                  BorderBrush="#738A9C"
+                   Margin="10,10,10,10"
+                  BorderThickness="0" FontWeight="Bold" FontFamily="Arial" FontSize="14">
+            <Border BorderThickness="2" BorderBrush="#E0E0E0" Margin="0" CornerRadius="4">
+                <TextBox x:Name="txtReceiveLog"
+                         FontFamily="Consolas"
+                         FontSize="12"
+                         IsReadOnly="True"
+                         TextWrapping="NoWrap"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         AcceptsReturn="True"
+                         AcceptsTab="True" FontWeight="Normal"/>
+            </Border>
+        </GroupBox>
+
+        <!-- Hiển thị & Điều khiển nhận -->
+        <Border Grid.Row="1" Grid.Column="1"
+                Margin="5,30,0,20"
+                BorderBrush="#2C3E50" BorderThickness="0" CornerRadius="3"
+                Background="#2C3E50">
+            <GroupBox Header="Hiển thị &amp; Điều khiển nhận" Margin="10" BorderThickness="0" Foreground="White" FontWeight="Bold" FontSize="14" >
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Left">
+                        <Label Content="Display:" VerticalAlignment="Center" Foreground="White" FontSize="12" FontWeight="Normal"/>
+                        <ComboBox x:Name="cmbDisplayMode" Width="100" Margin="5,0" SelectedIndex="0" HorizontalAlignment="Center" FontSize="12" FontWeight="Normal">
+                            <ComboBoxItem Content="ASCII"/>
+                            <ComboBoxItem Content="Hex"/>
+                            <ComboBoxItem Content="Dec"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5" >
+                        
+                        <Button Content="Lưu log"
+                                Command="{Binding CdcVM.SaveLogCommand}"
+                                Width="100"
+                                FontSize="12"
+                                Background="#2C3E50"
+                                Foreground="White" FontWeight="Normal"/>
+                    <TextBlock Text=""
+                               FontSize="12"/>
+                    </StackPanel>
+                    <Button Content="Xóa nhật ký nhận"
+                                Command="{Binding CdcVM.ClearReceiveCommand}"
+                                Width="120"
+                                Margin="0,10,10,0"
+                                Foreground="White"
+                            FontSize="12"
+                                Background="#2C3E50"
+                                HorizontalAlignment="Left" FontWeight="Normal"/>
+                </StackPanel>
+            </GroupBox>
+        </Border>
+    </Grid>
+</UserControl>
