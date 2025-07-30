@@ -26,5 +26,10 @@ namespace UsbComposite.Views
             InitializeComponent();
             _mainViewModel = (MainViewModel)((MainWindow)Application.Current.MainWindow).DataContext;
         }
+
+        private void CmbComPorts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

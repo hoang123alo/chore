@@ -6,326 +6,512 @@
         xmlns:local="clr-namespace:UsbComposite.Views"
         xmlns:helpers="clr-namespace:UsbComposite.Helpers"
         mc:Ignorable="d"
-         Background="#738A9C">
-    
-    
+         Background="White">
+
     <UserControl.Resources>
-        <!-- Có thể bạn không cần khai báo lại nếu đã khai báo trong App.xaml -->
         <helpers:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+        <SolidColorBrush x:Key="DefaultForeground" Color="#4A4A4A"/>
+        <SolidColorBrush x:Key="DefaultBackground" Color="White"/>
+        <SolidColorBrush x:Key="DefaultBorder" Color="#808080"/>
+        <SolidColorBrush x:Key="AccentBlueBackground" Color="#FF4C61EC"/>
+        <SolidColorBrush x:Key="AccentWhiteForeground" Color="White"/>
+        <SolidColorBrush x:Key="HoverBackground" Color="White"/>
+        <SolidColorBrush x:Key="HoverBorder" Color="#A0A0A0"/>
+        <SolidColorBrush x:Key="ComboBoxActiveBorder" Color="#A0A0A0"/>
+
+        <SolidColorBrush x:Key="DisabledBackground" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="DisabledForeground" Color="#A0A0A0"/>
+        <SolidColorBrush x:Key="DisabledBorder" Color="#C0C0C0"/>
+
+        <SolidColorBrush x:Key="ComboBoxHoverBackground" Color="#F0F0F0"/>
+        <SolidColorBrush x:Key="ComboBoxSelectedBackground" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="White"/>
+        <SolidColorBrush x:Key="ComboBoxDropDownBorder" Color="#CCCCCC"/>
+
+        <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource DefaultBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DefaultBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="7">
+                            <ContentPresenter x:Name="ButtonContent"
+                                      Margin="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource HoverBackground}"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource HoverBorder}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource AccentBlueBackground}"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource AccentBlueBackground}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentWhiteForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{StaticResource DisabledBackground}"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource DisabledBorder}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForeground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CustomComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="Background" Value="{StaticResource DefaultBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DefaultBackground}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Border x:Name="Bd"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="0"
+                        SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ComboBoxHoverBackground}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource ComboBoxHoverBackground}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ComboBoxSelectedBackground}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForeground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CustomComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="Border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4"
+                            Padding="4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="20"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ContentPresenter
+                                    Margin="2,0,0,0"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    IsHitTestVisible="False" />
+
+                                    <ToggleButton Grid.Column="1"
+                                    x:Name="PART_ToggleButton"
+                                    Focusable="False"
+                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                    ClickMode="Press"
+                                    Background="Transparent"
+                                    BorderThickness="0">
+                                        <Path x:Name="Arrow"
+                                        Data="M 0 0 L 4 4 L 8 0 Z"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Fill="Black"/>
+                                    </ToggleButton>
+                                </Grid>
+                            </Border>
+
+                            <Popup x:Name="PART_Popup"
+                           Placement="Bottom"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Slide">
+                                <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  MinWidth="{TemplateBinding ActualWidth}">
+                                    <Border Background="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="4"/>
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                        KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#FFE5E5E5"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFAAAAAA"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="DarkGray"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="DodgerBlue"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
-    
-    <Grid Margin="10">
-        <!-- 2 cột -->
+
+    <Border Margin="5"
+            Background="WhiteSmoke"
+            CornerRadius="20"
+            BorderBrush="#CCCCCC"
+            BorderThickness="0">
+
+        <Grid Margin="5">
+        <!-- 5 cột -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="12*"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="12*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
         <!-- 3 hàng: trên và dưới nhỏ gọn -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" MinHeight="64"/>
-            <!-- Hàng trên -->
-            <RowDefinition Height="6*" MinHeight="64"/>
-            <!-- Hàng giữa chứa GroupBox -->
-            <RowDefinition Height="2*" MinHeight="78"/>
-            <!-- Hàng dưới -->
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="*" />
+                <!-- Hàng dưới -->
         </Grid.RowDefinitions>
 
+            
         <!-- Bạn có thể đặt gì đó vào hàng 0 -->
-        <TextBlock Text="🔌 Chọn thiết bị để kết nối" 
-               Grid.Row="0" Grid.ColumnSpan="5" 
+            <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5"  
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White"
+                   >
+                <TextBlock Text="🔌 Chọn thiết bị để kết nối" 
                FontSize="30" FontWeight="Bold" 
                HorizontalAlignment="Center" 
-               Margin="110,0,111,10" Width="380"/>
-        <!-- 
-        <GroupBox Grid.Row="0" Grid.Column="0"
-                  Header="Gửi từng dòng"
-                  Margin="10,0,10,10"
-                  BorderBrush="#738A9C"
-                  BorderThickness="0" FontSize="14" FontWeight="Bold">
+               Width="380"/>
+            </Border>
+            
+           
 
-            <Border BorderThickness="2" BorderBrush="#E0E0E0" Margin="2" CornerRadius="5">
-        
-        
-        -->
-        <!-- GroupBox CDC -->
-        <GroupBox  Grid.Row="1" Grid.Column="1" 
-                   Background="#2C3E50"
+            <!--
+        <Border Grid.Column="3" Grid.RowSpan="3"  Grid.ColumnSpan="2"  Background="#FF312564">
+
+        </Border>-->
+
+        <!-- Kết nối CDC -->
+        <!-- Kết nối CDC  Background="#2C3E50"> -->
+            <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"  
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White"
+                     Margin="10">
+            <GroupBox   
                    BorderThickness="0"
+                   Foreground="#4A4A4A " FontWeight="Bold"
                    >
-            <StackPanel Margin="5" Orientation="Vertical">
-                <Label Content="ComPort" VerticalAlignment="Center"
-                       HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"
-                        Foreground ="White"/>
-                <!-- Dòng 1: COM + Baudrate + Hiển thị kiểu dữ liệu -->
-                <WrapPanel Margin="0,5,0,0" VerticalAlignment="Center">
-                    <Label Content="COM " VerticalAlignment="Center" Foreground ="White" Margin="50,0,0,0"/>
-                    <Label Content="Baud " VerticalAlignment="Center"  Foreground ="White" Margin="200,0,0,0" Width="41"/>
-                </WrapPanel>
-                
-                <WrapPanel Margin="0,10,0,0" VerticalAlignment="Center">
+                    <Grid Margin="10"  >
+                        <!-- Nền nhẹ để dễ nhìn Grid -->
 
-                    <ComboBox x:Name="cmbComPorts" Width="100" Margin="30,0,0,0"
-          ItemsSource="{Binding CdcVM.AvailablePorts}"
-          SelectedItem="{Binding CdcVM.SelectedPort}" />
+                        <!-- Định nghĩa 5 hàng -->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="4*"/>
+                            <!-- Hàng 0: Chiều cao tự động, cho 1 cột -->
+                            <RowDefinition Height="4*"/>
+                            <!-- Hàng 1: Chiều cao tự động, cho 2 cột -->
+                            <RowDefinition Height="4*"/>
+                            <!-- Hàng 2: Chiều cao tự động, cho 3 cột -->
+                            <RowDefinition Height="4"/>
+                            <!-- Hàng 3: Chiều cao tự động, cho 2 cột -->
+                            
+                            <!-- Hàng 4: Chiều cao tự động, cho 2 cột -->
+                        </Grid.RowDefinitions>
 
-                    
-                    <ComboBox x:Name="cmbBaudRate" Width="100" Height="50" Margin="150,0,0,0"
-                              VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-          SelectedItem="{Binding CdcVM.SelectedBaudRate}">
-                        <ComboBoxItem Content="9600"/>
-                        <ComboBoxItem Content="19200"/>
-                        <ComboBoxItem Content="38400"/>
-                        <ComboBoxItem Content="115200" IsSelected="True"/>
-                        <ComboBoxItem Content="230400"/>
-                        <ComboBoxItem Content="460800"/>
-                        <ComboBoxItem Content="921600"/>
-                    </ComboBox>
+                        <!-- Định nghĩa 6 cột (để linh hoạt chia 2 hoặc 3 cột) -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <!-- Cột 0 -->
+                            <ColumnDefinition Width="3*"/>
+                            <!-- Cột 1 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 2 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 3 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 4 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 5 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 6 -->
+                            <ColumnDefinition Width="*"/>
+                            <!-- Cột 7 -->
+                        </Grid.ColumnDefinitions>
 
-                </WrapPanel>
+                        <!-- Hàng 0: Chỉ có 1 cột (kéo dài qua 6 cột) -->
+                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" 
+             CornerRadius="5">
+                            <TextBlock Text="Comport"  
+                   HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    FontWeight="Bold" FontSize ="18"/>
+                        </Border>
 
-                <!-- Dòng 2: DataBits + Parity + StopBits -->
-                <WrapPanel Margin="0,5,0,0" VerticalAlignment="Center">
+                        <!-- Hàng 1: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
+                        <Border Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3"
+                         CornerRadius="5">
+                            <!-- BẮT ĐẦU: THAY THẾ TEXTBLOCK BẰNG MỘT GRID MỚI -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
+                                </Grid.RowDefinitions>
 
-                    <Label Content="Data Bits:" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cmbDataBits" Width="50" Margin="5,0" 
+                                <!-- Nội dung cho hàng nhỏ thứ nhất -->
+                                <TextBlock Grid.Row="0" Text="Com" 
+                   HorizontalAlignment="Left" VerticalAlignment="Bottom"  />
+
+                                <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                <Border Grid.Row="1" CornerRadius="3" Margin="0,0,10,0">
+                                    <ComboBox x:Name="cmbComPorts" 
+                                          Style="{StaticResource CustomComboBoxStyle}" 
+                                      Height="auto" Width="auto"
+                                      ItemsSource="{Binding CdcVM.AvailablePorts}"
+                                      SelectedItem="{Binding CdcVM.SelectedPort}" SelectionChanged="CmbComPorts_SelectionChanged" />
+                                </Border>
+                                <!--
+                                      Style="{StaticResource CenterAlignedComboBox}"
+    ItemContainerStyle="{StaticResource CenterAlignedComboBoxItem}"-->
+                            </Grid>
+                            <!-- KẾT THÚC: GRID MỚI -->
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="3" 
+                CornerRadius="5" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
+                                </Grid.RowDefinitions>
+
+                                <!-- Nội dung cho hàng nhỏ thứ nhất -->
+                                <TextBlock Grid.Row="0" Text="Baud Rate"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+                                <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                <Border Grid.Row="1" CornerRadius="3" Margin="0,0,10,0">
+                                    <ComboBox  x:Name="cmbBaudRate" Width="Auto" Height="Auto" 
+                                          Style="{StaticResource CustomComboBoxStyle}" 
+                                          ItemsSource="{Binding CdcVM.BaudRateOptions}"
+                                      SelectedItem="{Binding CdcVM.SelectedBaudRate}"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center" >
+                                    </ComboBox>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Hàng 2: 3 cột (mỗi cột kéo dài qua 2 cột con) -->
+                        <Border Grid.Row="2" Grid.Column="2" 
+                        Grid.ColumnSpan="2" CornerRadius="5" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
+                                </Grid.RowDefinitions>
+
+                                <!-- Nội dung cho hàng nhỏ thứ nhất -->
+                                <TextBlock Grid.Row="0" Text="Data bits" 
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5"/>
+
+                                <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                <!--
+                        <ComboBox x:Name="cmbDataBits" Grid.Row="1" Width="Auto" Height="Auto" 
+                                          SelectedItem="{Binding CdcVM.SelectedDataBits}"
+                                           Background="Aqua">
+                            <ComboBoxItem Content="7"/>
+                            <ComboBoxItem Content="8" IsSelected="True"/>
+                        </ComboBox-->
+
+                                <Border Grid.Row="1" CornerRadius="3" Margin="0,0,10,0">
+                                    <ComboBox x:Name="cmbDataBits" Width="Auto" Height="Auto" 
+                                          Style="{StaticResource CustomComboBoxStyle}" 
+                                          ItemsSource="{Binding CdcVM.DataBitsOptions}"
                                           SelectedItem="{Binding CdcVM.SelectedDataBits}">
-                        <ComboBoxItem Content="7"/>
-                        <ComboBoxItem Content="8" IsSelected="True"/>
-                    </ComboBox>
 
-                    <Label Content="Parity:" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cmbParity" Width="70" Margin="5,0" 
-                                          SelectedItem="{Binding CdcVM.SelectedParity}">
-                        <ComboBoxItem Content="None" IsSelected="True"/>
-                        <ComboBoxItem Content="Odd"/>
-                        <ComboBoxItem Content="Even"/>
-                    </ComboBox>
+                                    </ComboBox>
+                                </Border>
 
-                    <Label Content="Stop Bits:" Margin="1,0,0,0" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="cmbStopBits" Width="50" Margin="5,0" 
-                                          SelectedItem="{Binding CdcVM.SelectedStopBits}">
-                        <ComboBoxItem Content="One" IsSelected="True"/>
-                        <ComboBoxItem Content="Two"/>
-                    </ComboBox>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2" CornerRadius="5" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
+                                </Grid.RowDefinitions>
 
-                </WrapPanel>
+                                <!-- Nội dung cho hàng nhỏ thứ nhất -->
+                                <TextBlock Grid.Row="0" Text="Parity" 
+                                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5"/>
 
-                <!-- Dòng 3: CR LF + Mở/Đóng COM -->
-                    <Border BorderThickness="2" BorderBrush="#E0E0E0" Margin="2" CornerRadius="5">
-                <WrapPanel Margin="0,10,0,0">
+                                <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                <Border Grid.Row="1" CornerRadius="3" Margin="0,0,10,0">
+                                    <ComboBox Style="{StaticResource CustomComboBoxStyle}" 
+                                              x:Name="cmbParity"
+                                              ItemsSource="{Binding CdcVM.ParityOptions}"
+                                              SelectedItem="{Binding CdcVM.SelectedParity}"
+                                              Width="Auto" Height="Auto"/>
 
-                        <Button Content="Open COM"
-        Command="{Binding CdcVM.OpenComCommand}"
-        IsEnabled="{Binding CdcVM.IsSerialOpen, Converter={StaticResource InverseBoolConverter}}"
-        Width="70" Height="50" Margin="0,0,100,0" 
-                                HorizontalAlignment="Left"/>
-                        <Button Content="Close COM"
-        Command="{Binding CdcVM.CloseComCommand}"
-        IsEnabled="{Binding CdcVM.IsSerialOpen}"
-        Width="80" 
-                                HorizontalAlignment="Right"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="6" Grid.ColumnSpan="2" >
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
+                                </Grid.RowDefinitions>
 
-                    </WrapPanel>
-             </Border>
+                                <!-- Nội dung cho hàng nhỏ thứ nhất -->
+                                <TextBlock Grid.Row="0" Text="Stop bits"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5"/>
 
-            </StackPanel>
+                                <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                <Border Grid.Row="1" CornerRadius="3" Margin="0,0,10,0">
+                                    <ComboBox x:Name="cmbStopBits" Width="Auto" Height="Auto" 
+                                          ItemsSource="{Binding CdcVM.StopBitsOptions}"
+                                          SelectedItem="{Binding CdcVM.SelectedStopBits}"
+                                          Style="{StaticResource CustomComboBoxStyle}" >
 
-        </GroupBox>
+                                    </ComboBox>
+                                </Border>
+                            </Grid>
+                        </Border>
 
-        <!-- GroupBox HID -->
-        <GroupBox  Grid.Row="1" Grid.Column="3"  
-                   Background="#2C3E50"
-                   BorderThickness="0">
-            <Grid Margin="10" Background="#2C3E50">
-                <!-- Nền nhẹ để dễ nhìn Grid -->
-
-                <!-- Định nghĩa 5 hàng -->
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <!-- Hàng 0: Chiều cao tự động, cho 1 cột -->
-                    <RowDefinition Height="*"/>
-                    <!-- Hàng 1: Chiều cao tự động, cho 2 cột -->
-                    <RowDefinition Height="*"/>
-                    <!-- Hàng 2: Chiều cao tự động, cho 3 cột -->
-                    <RowDefinition Height="*"/>
-                    <!-- Hàng 3: Chiều cao tự động, cho 2 cột -->
-                    <RowDefinition Height="*"/>
-                    <!-- Hàng 4: Chiều cao tự động, cho 2 cột -->
-                </Grid.RowDefinitions>
-
-                <!-- Định nghĩa 6 cột (để linh hoạt chia 2 hoặc 3 cột) -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 0 -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 1 -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 2 -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 3 -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 4 -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Cột 5 -->
-                </Grid.ColumnDefinitions>
-
-                <!-- Hàng 0: Chỉ có 1 cột (kéo dài qua 6 cột) -->
-                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" 
-            Background="#4A90E2" CornerRadius="5" Margin="5">
-                    <TextBlock Text="Hàng 0: Một cột duy nhất" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" 
-                   Padding="10" FontWeight="Bold"/>
-                </Border>
-
-                <!-- Hàng 1: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
-                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-        Background="#6B7A8F" CornerRadius="5" Margin="5">
-                    <!-- BẮT ĐẦU: THAY THẾ TEXTBLOCK BẰNG MỘT GRID MỚI -->
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                        <TextBlock Grid.Row="0" Text="Hàng 1, Cột 0 - Phần trên" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-
-                        <!-- Nội dung cho hàng nhỏ thứ hai -->
-                        <Border Grid.Row="1" Background="#5A6B7F" CornerRadius="3" Margin="5">
-                            <TextBlock Text="Hàng 1, Cột 0 - Phần dưới" Foreground="White" 
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+                        <!-- Hàng 3: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
+                        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1"
+              Margin="5">
+                            <Button Content="Open COM"
+                            Command="{Binding CdcVM.OpenComCommand}"
+                            IsEnabled="{Binding CdcVM.IsSerialOpen, Converter={StaticResource InverseBoolConverter}}"
+                            Width="Auto" Height="Auto" 
+                            Style="{StaticResource CustomButtonStyle}"/>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" 
+             Margin="5">
+                            <Button Content="Close COM"
+                            Command="{Binding CdcVM.CloseComCommand}"
+                            IsEnabled="{Binding CdcVM.IsSerialOpen}"
+                            Width="Auto" Height="Auto"
+                                Style="{StaticResource CustomButtonStyle}"/>
                         </Border>
                     </Grid>
-                    <!-- KẾT THÚC: GRID MỚI -->
-                </Border>
-                <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" 
-            Background="#6B7A8F" CornerRadius="5" Margin="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
-                        </Grid.RowDefinitions>
+                </GroupBox>
+        </Border>
 
-                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                        <TextBlock Grid.Row="0" Text="Hàng 1, Cột 0 - Phần trên" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
 
-                        <!-- Nội dung cho hàng nhỏ thứ hai -->
-                        <Border Grid.Row="1" Background="#5A6B7F" CornerRadius="3" Margin="5">
-                            <TextBlock Text="Hàng 1, Cột 0 - Phần dưới" Foreground="White" 
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-                        </Border>
-                    </Grid>
-                </Border>
+            <Border Grid.Row="3" Grid.Column="5"  
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White"
+                     Margin="7">
+                <TextBlock Text="Loading ..." 
+               FontSize="20" FontWeight="Bold" 
+               HorizontalAlignment="Left" 
+               Width="380"/>
+            </Border>
 
-                <!-- Hàng 2: 3 cột (mỗi cột kéo dài qua 2 cột con) -->
-                <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-            Background="#FF6B6B" CornerRadius="5" Margin="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
-                        </Grid.RowDefinitions>
+            <Border Grid.Row="5" Grid.Column="1"  
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White"
+                     Margin="7">
+                <TextBlock Text="Loading .. " 
+               FontSize="20" FontWeight="Bold" 
+               HorizontalAlignment="Left" 
+               Width="380"/>
+            </Border>
+            
 
-                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                        <TextBlock Grid.Row="0" Text="Hàng 1, Cột 0 - Phần trên" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
+            <Border Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="3"  
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White" Margin="7">
+                <TextBlock Text="Loading ..." 
+               FontSize="20" FontWeight="Bold" 
+               HorizontalAlignment="Left" 
+               Width="380"/>
+            </Border>
 
-                        <!-- Nội dung cho hàng nhỏ thứ hai -->
-                        <Border Grid.Row="1" Background="#5A6B7F" CornerRadius="3" Margin="5">
-                            <TextBlock Text="Hàng 1, Cột 0 - Phần dưới" Foreground="White" 
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-                        </Border>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
-            Background="#FF6B6B" CornerRadius="5" Margin="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
-                        </Grid.RowDefinitions>
+            
+            
+            
+            
+            <!-- Hàng dưới cùng -->
 
-                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                        <TextBlock Grid.Row="0" Text="Hàng 1, Cột 0 - Phần trên" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-
-                        <!-- Nội dung cho hàng nhỏ thứ hai -->
-                        <Border Grid.Row="1" Background="#5A6B7F" CornerRadius="3" Margin="5">
-                            <TextBlock Text="Hàng 1, Cột 0 - Phần dưới" Foreground="White" 
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-                        </Border>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="2"
-            Background="#FF6B6B" CornerRadius="5" Margin="5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
-                            <RowDefinition Height="*"/>
-                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                        <TextBlock Grid.Row="0" Text="Hàng 1, Cột 0 - Phần trên" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-
-                        <!-- Nội dung cho hàng nhỏ thứ hai -->
-                        <Border Grid.Row="1" Background="#5A6B7F" CornerRadius="3" Margin="5">
-                            <TextBlock Text="Hàng 1, Cột 0 - Phần dưới" Foreground="White" 
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5"/>
-                        </Border>
-                    </Grid>
-                </Border>
-
-                <!-- Hàng 3: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
-                <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
-            Background="#4CAF50" CornerRadius="5" Margin="5">
-                    <TextBlock Text="Hàng 3, Cột 0" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
-                </Border>
-                <Border Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="3" 
-            Background="#4CAF50" CornerRadius="5" Margin="5">
-                    <TextBlock Text="Hàng 3, Cột 1 (kéo dài)" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
-                </Border>
-
-                <!-- Hàng 4: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
-                <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-            Background="#FFC107" CornerRadius="5" Margin="5">
-                    <TextBlock Text="Hàng 4, Cột 0" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
-                </Border>
-                <Border Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="3" 
-            Background="#FFC107" CornerRadius="5" Margin="5">
-                    <TextBlock Text="Hàng 4, Cột 1 (kéo dài)" Foreground="White" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
-                </Border>
-
-            </Grid>
-
-        </GroupBox>
-
-        <!-- Hàng dưới cùng -->
         <TextBlock Text="⚠️ Vui lòng kết nối thiết bị trước khi thao tác" 
-               Grid.Row="2" Grid.ColumnSpan="5" 
-               FontSize="30" Foreground="DarkRed" 
+               Grid.Row="7" Grid.Column="1"  Grid.ColumnSpan="5" 
+               FontSize="20" Foreground="DarkRed" 
                HorizontalAlignment="Center"
-               Margin="0,10,0,0" Width="601"/>
+               Margin="0,10,0,0" Width="601"/> 
+
     </Grid>
+    </Border>
 </UserControl>

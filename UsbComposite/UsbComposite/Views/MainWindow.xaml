@@ -5,17 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UsbComposite"
         xmlns:models="clr-namespace:UsbComposite.Models"
-        xmlns:vm="clr-namespace:UsbComposite.Viewmodels"  
+        xmlns:vm="clr-namespace:UsbComposite.Viewmodels" 
         xmlns:helpers="clr-namespace:UsbComposite.Helpers"
         mc:Ignorable="d"
-        Title="UC-Link" Height="600" Width="1060">
-    <!-- 🎨 Resources -->
+        Title="UC-Link" Height="700" Width="1250"
+        Background="#F8F9FA">
     <Window.Resources>
-        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#2C3E50"/>
-        <SolidColorBrush x:Key="TabSelectedBrush" Color="#738A9C"/>
-        <SolidColorBrush x:Key="TabHoverBrush" Color="#3D566E"/>
-        <SolidColorBrush x:Key="TabForegroundBrush" Color="White"/>
-        <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="Black"/>
+        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FFFFFF"/>
+
+        <SolidColorBrush x:Key="TabSelectedBrush" Color="#E8F4FD"/>
+        <SolidColorBrush x:Key="TabHoverBrush" Color="#F2F8FC"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="#4A4A4A"/>
+
+        <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="White"/>
+        <SolidColorBrush x:Key="HeaderForegroundBrush" Color="#2C3E50"/>
+        <SolidColorBrush x:Key="MainContentBackgroundBrush" Color="#FFFFFF"/>
+        <!--           <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="#007BFF"/>
+                    <SolidColorBrush x:Key="HeaderForegroundBrush" Color="#2C3E50"/>      -->
     </Window.Resources>
 
     <Grid>
@@ -24,18 +30,32 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Sidebar -->
         <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
             <StackPanel>
-                <TextBlock Text="Hoang's device"
-                           Foreground="White"
-                           FontSize="20"
+                <!--
+                <TextBlock Text=""
+                           Foreground="{StaticResource HeaderForegroundBrush}" FontSize="20"
                            FontWeight="Bold"
                            Margin="0,20,0,10"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"/>
+                -->
+                <Border CornerRadius="10" Background="WhiteSmoke" Margin="5,5,5,10" >
+                <StackPanel Orientation="Horizontal" 
+                HorizontalAlignment="Center" 
+                Margin="0,20,0,10">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE713;"
+                   FontSize="50" Foreground="{StaticResource HeaderForegroundBrush}" VerticalAlignment="Center"
+                   Margin="10,15,5,15"/>
+                    <TextBlock Text="Hoang's device"
+                   Foreground="{StaticResource HeaderForegroundBrush}" 
+                   FontSize="17"
+                   FontWeight="Bold"
+                   VerticalAlignment="Center"/>
+                </StackPanel>
+                </Border>
 
-                <!-- TabControl with custom layout -->
                 <TabControl x:Name="SidebarTabControl"
                             SelectionChanged="SidebarTabControl_SelectionChanged"
                             TabStripPlacement="Left"
@@ -44,10 +64,9 @@
                             FontSize="13"
                             FontWeight="Bold">
 
-                    <!-- TabItem style -->
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
-                            <Setter Property="Height" Value="60"/>
+                            <Setter Property="Height" Value="35"/>
                             <Setter Property="Width" Value="200"/>
                             <Setter Property="Padding" Value="10,0,0,0"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -57,39 +76,44 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
-                                        <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
-                                            <Border x:Name="tabItemBorder"
-                                                    Background="{TemplateBinding Background}"
-                                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                                    Margin="0,0,0,0">
-                                                <ContentPresenter x:Name="contentPresenter"
-                                                                  ContentSource="Header"
-                                                                  RecognizesAccessKey="True"
-                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                                  Margin="{TemplateBinding Padding}"/>
-                                            </Border>
-                                        </Grid>
+                                        <Border x:Name="border"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="8"
+                        Margin="15,0,15,0">
+                                            <ContentPresenter x:Name="contentPresenter"
+                                      ContentSource="Header"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"/>
+                                        </Border>
+
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsSelected" Value="False">
-                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource SidebarBackgroundBrush}"/>
-                                                <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
-                                            </Trigger>
+
+                                            <!-- Khi Selected thì hiển thị border -->
                                             <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource TabSelectedBrush}"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource TabSelectedForegroundBrush}"/>
+                                                <Setter TargetName="border" Property="Background" Value="#FF4C61EC"/>
+                                                
+                                                <!-- Nền nhẹ nếu muốn -->
                                                 <Setter Property="Foreground" Value="{StaticResource TabSelectedForegroundBrush}"/>
                                             </Trigger>
+
+                                            <!-- Khi Hover thì hiện border -->
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{StaticResource TabHoverBrush}"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#90C5FF"/>
                                                 <Setter Property="Foreground" Value="{StaticResource TabForegroundBrush}"/>
                                             </Trigger>
+
+                                            <!-- Khi bị disable -->
                                             <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="tabItemBorder" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                                <Setter TargetName="tabItemBorder" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                                             </Trigger>
+
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -97,12 +121,16 @@
                         </Style>
                     </TabControl.Resources>
 
-                    <!-- TabItems with icon + text -->
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="Images/device.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE701;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
                                 <TextBlock Text="Connect device" VerticalAlignment="Center" FontSize="14"/>
+                               
                             </StackPanel>
                         </TabItem.Header>
                     </TabItem>
@@ -110,7 +138,11 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="Images/uart.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE703;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
                                 <TextBlock Text="Comport" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
                         </TabItem.Header>
@@ -119,7 +151,11 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="Images/hid.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE804;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
                                 <TextBlock Text="DignosticCan" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
                         </TabItem.Header>
@@ -128,7 +164,11 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="Images/info.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE71d;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
                                 <TextBlock Text="Device information" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
                         </TabItem.Header>
@@ -137,7 +177,11 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Image Source="Images/help.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE783;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
                                 <TextBlock Text="Help" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
                         </TabItem.Header>
@@ -147,7 +191,6 @@
             </StackPanel>
         </Border>
 
-        <!-- Main content area -->
-        <ContentControl x:Name="MainContentArea" Grid.Column="1" Background="LightYellow"/>
+        <ContentControl x:Name="MainContentArea" Grid.Column="1" Background="{StaticResource MainContentBackgroundBrush}"/>
     </Grid>
 </Window>

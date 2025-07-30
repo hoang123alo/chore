@@ -7,6 +7,87 @@
         mc:Ignorable="d"
          Height="450" Width="800">
     <Grid>
-        
+        <!-- Kết nối CDC -->
+        <GroupBox  Grid.Row="1" Grid.Column="1" 
+                   Background="#2C3E50"
+                   BorderThickness="0"
+                   >
+            <StackPanel Margin="5" Orientation="Vertical">
+                <Label Content="ComPort" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"
+                        Foreground ="White"/>
+                <!-- Dòng 1: COM + Baudrate + Hiển thị kiểu dữ liệu -->
+                <WrapPanel Margin="0,5,0,0" VerticalAlignment="Center">
+                    <Label Content="COM " VerticalAlignment="Center" Foreground ="White" Margin="50,0,0,0"/>
+                    <Label Content="Baud " VerticalAlignment="Center"  Foreground ="White" Margin="200,0,0,0" Width="41"/>
+                </WrapPanel>
+
+                <WrapPanel Margin="0,10,0,0" VerticalAlignment="Center">
+
+                    <ComboBox x:Name="cmbComPorts" Width="100" Margin="30,0,0,0"
+          ItemsSource="{Binding CdcVM.AvailablePorts}"
+          SelectedItem="{Binding CdcVM.SelectedPort}" />
+
+
+                    <ComboBox x:Name="cmbBaudRate" Width="100" Height="50" Margin="150,0,0,0"
+                              VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+          SelectedItem="{Binding CdcVM.SelectedBaudRate}">
+                        <ComboBoxItem Content="9600"/>
+                        <ComboBoxItem Content="19200"/>
+                        <ComboBoxItem Content="38400"/>
+                        <ComboBoxItem Content="115200" IsSelected="True"/>
+                        <ComboBoxItem Content="230400"/>
+                        <ComboBoxItem Content="460800"/>
+                        <ComboBoxItem Content="921600"/>
+                    </ComboBox>
+
+                </WrapPanel>
+
+                <!-- Dòng 2: DataBits + Parity + StopBits -->
+                <WrapPanel Margin="0,5,0,0" VerticalAlignment="Center">
+
+                    <Label Content="Data Bits:" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="cmbDataBits" Width="50" Margin="5,0" 
+                                          SelectedItem="{Binding CdcVM.SelectedDataBits}">
+                        <ComboBoxItem Content="7"/>
+                        <ComboBoxItem Content="8" IsSelected="True"/>
+                    </ComboBox>
+
+                    <Label Content="Parity:" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="cmbParity" Width="70" Margin="5,0" 
+                                          SelectedItem="{Binding CdcVM.SelectedParity}">
+                        <ComboBoxItem Content="None" IsSelected="True"/>
+                        <ComboBoxItem Content="Odd"/>
+                        <ComboBoxItem Content="Even"/>
+                    </ComboBox>
+
+                    <Label Content="Stop Bits:" Margin="1,0,0,0" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="cmbStopBits" Width="50" Margin="5,0" 
+                                          SelectedItem="{Binding CdcVM.SelectedStopBits}">
+                        <ComboBoxItem Content="One" IsSelected="True"/>
+                        <ComboBoxItem Content="Two"/>
+                    </ComboBox>
+
+                </WrapPanel>
+
+                <!-- Dòng 3: CR LF + Mở/Đóng COM -->
+                <Border BorderThickness="2" BorderBrush="#E0E0E0" Margin="2" CornerRadius="5">
+                    <WrapPanel Margin="0,10,0,0">
+
+                        <Button Content="Open COM"
+        Command="{Binding CdcVM.OpenComCommand}"
+        IsEnabled="{Binding CdcVM.IsSerialOpen, Converter={StaticResource InverseBoolConverter}}"
+        Width="70" Height="50" Margin="0,0,100,0" 
+                                HorizontalAlignment="Left"/>
+                        <Button Content="Close COM"
+        Command="{Binding CdcVM.CloseComCommand}"
+        IsEnabled="{Binding CdcVM.IsSerialOpen}"
+        Width="80" 
+                                HorizontalAlignment="Right"/>
+                    </WrapPanel>
+                </Border>
+            </StackPanel>
+        </GroupBox>
     </Grid>
     </UserControl>

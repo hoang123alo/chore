@@ -33,9 +33,36 @@ namespace UsbComposite.Viewmodels
 
 
         public string SelectedPort { get; set; }
+        public ObservableCollection<int> BaudRateOptions { get; } = new ObservableCollection<int>
+                {
+                    9600, 19200, 38400, 57600, 115200
+                };
+
         public int SelectedBaudRate { get; set; } = 115200;
+
+        public ObservableCollection<int> DataBitsOptions { get; } = new ObservableCollection<int>
+                {
+                    5, 6, 7, 8
+                };
+
         public int SelectedDataBits { get; set; } = 8;
+
+        public ObservableCollection<Parity> ParityOptions { get; } = new ObservableCollection<Parity>
+                {
+                    Parity.None,
+                    Parity.Odd,
+                    Parity.Even
+                };
+
         public Parity SelectedParity { get; set; } = Parity.None;
+
+        public ObservableCollection<StopBits> StopBitsOptions { get; } = new ObservableCollection<StopBits>
+                {
+                    StopBits.One,
+                    StopBits.OnePointFive,
+                    StopBits.Two
+                };
+
         public StopBits SelectedStopBits { get; set; } = StopBits.One;
 
         // Thay đổi: truyền 1 chuỗi lớn để append TextBox
