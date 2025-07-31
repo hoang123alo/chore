@@ -15,32 +15,23 @@
 
         <SolidColorBrush x:Key="TabSelectedBrush" Color="#E8F4FD"/>
         <SolidColorBrush x:Key="TabHoverBrush" Color="#F2F8FC"/>
-        <SolidColorBrush x:Key="TabForegroundBrush" Color="#4A4A4A"/>
+        <SolidColorBrush x:Key="TabForegroundBrush" Color="#262626"/>
 
         <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="White"/>
         <SolidColorBrush x:Key="HeaderForegroundBrush" Color="#2C3E50"/>
         <SolidColorBrush x:Key="MainContentBackgroundBrush" Color="#FFFFFF"/>
-        <!--           <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="#007BFF"/>
-                    <SolidColorBrush x:Key="HeaderForegroundBrush" Color="#2C3E50"/>      -->
+        
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
             <StackPanel>
-                <!--
-                <TextBlock Text=""
-                           Foreground="{StaticResource HeaderForegroundBrush}" FontSize="20"
-                           FontWeight="Bold"
-                           Margin="0,20,0,10"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top"/>
-                -->
-                <Border CornerRadius="10" Background="WhiteSmoke" Margin="5,5,5,10" >
+                <Border CornerRadius="10" Background="#f0f0f0" Margin="5,15,5,10" >
                 <StackPanel Orientation="Horizontal" 
                 HorizontalAlignment="Center" 
                 Margin="0,20,0,10">
@@ -50,7 +41,7 @@
                    Margin="10,15,5,15"/>
                     <TextBlock Text="Hoang's device"
                    Foreground="{StaticResource HeaderForegroundBrush}" 
-                   FontSize="17"
+                   FontSize="16"
                    FontWeight="Bold"
                    VerticalAlignment="Center"/>
                 </StackPanel>

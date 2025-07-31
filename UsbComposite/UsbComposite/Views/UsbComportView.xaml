@@ -195,8 +195,10 @@
 
     </UserControl.Resources>
     <!--Background="#738A9C" -->
-    <Border Margin="5"
-            Background="WhiteSmoke"
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1300" Height="800">
+            <Border 
+            Background="#f0f0f0"
             CornerRadius="20"
             BorderBrush="#CCCCCC"
             BorderThickness="0">
@@ -205,26 +207,28 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20*" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="10*" />
+                <ColumnDefinition Width="20*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="20*" />
+                <RowDefinition Height="3*" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="20*" />
+                <RowDefinition Height="18*" />
                 <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
             <!-- Gửi từng dòng -->
-            <Border Grid.Row="1" Grid.Column="1"
-        Margin="10"
+            <Border Grid.Row="3" Grid.Column="1"
+       
         BorderBrush="#738A9C"
         BorderThickness="0"
         CornerRadius="5"
         Background="White">
 
-                <Grid Margin="5" >
+                <Grid Margin="10" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <!-- Hàng 1: TextBlock -->
@@ -237,7 +241,7 @@
                    Text="Gửi từng dòng"
                    FontSize="16"
                    FontWeight="Bold"
-                   Foreground="#4A4A4A"
+                   Foreground="#262626"
                    />
 
                     <!-- Hàng 2 -->
@@ -253,8 +257,8 @@
               BorderThickness="0"
               GridLinesVisibility="None"
               FontSize="12"
-              Foreground="#4A4A4A"
-              FontWeight="Normal">
+              Foreground="#4A4A4A" 
+             >
 
                             <DataGrid.Resources>
                                 <!-- Header style -->
@@ -262,7 +266,8 @@
                                     <Setter Property="Foreground" Value="#4A4A4A"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                    <Setter Property="Background" Value="White"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Background" Value="White"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                 </Style>
 
@@ -272,9 +277,11 @@
                                     <Setter Property="Background" Value="White"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                     <!-- Comment 2 dòng dưới nếu muốn tắt viền dưới -->
-                                    <!--<Setter Property="BorderThickness" Value="0,0,0,1"/>-->
-                                    <!--<Setter Property="BorderBrush" Value="#DADADA"/>-->
-                                    <Style.Triggers>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Setter Property="BorderBrush" Value="#FF979393"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            <Style.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" Value="WhiteSmoke"/>
                                             <Setter Property="Foreground" Value="#4A4A4A"/>
@@ -288,7 +295,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Data" Width="*" Binding="{Binding DataString, UpdateSourceTrigger=PropertyChanged}" />
 
-                                <DataGridTemplateColumn Header="Type" Width="80">
+                                <DataGridTemplateColumn Header="Type" Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ComboBox 
@@ -316,7 +323,7 @@
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
 
-                                <DataGridTemplateColumn Header="Gửi" Width="60">
+                                <DataGridTemplateColumn Header="Gửi" Width="70">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Content="Gửi"
@@ -338,8 +345,7 @@
 
 
             <!-- Tùy chọn gửi -->
-            <Border Grid.Row="1" Grid.Column="3"
-                          Margin="10"
+            <Border Grid.Row="1" Grid.Column="1"
         BorderBrush="#2C3E50" BorderThickness="0" CornerRadius="5" 
         Background="White">
                 <GroupBox  BorderThickness="0" Foreground="Black" FontSize="14" FontWeight="Bold">
@@ -347,68 +353,55 @@
                     <!-- Bên trong GroupBox tạo Grid 4 hàng 4 cột -->
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                             <!-- Hàng 0 -->
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                             <!-- Hàng 1 -->
-                            <RowDefinition Height="Auto" />
-                            <!-- Hàng 2 -->
-                            <RowDefinition Height="Auto" />
-                            <!-- Hàng 3, nếu cần -->
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*" />
+                            <ColumnDefinition Width="*" />
                             <!-- Cột 0 -->
-                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="5*" />
                             <!-- Cột 1 -->
                             <ColumnDefinition Width="*" />
                             <!-- Cột 2 -->
-                            <ColumnDefinition Width="20*" />
-                            <!-- Cột 3 -->
+                            <ColumnDefinition Width="5*" />
+                            
+                            <ColumnDefinition Width="*" />
+                            <!-- Cột 1 -->
+                            <ColumnDefinition Width="5*" />
+                            <!-- Cột 2 -->
+                            <ColumnDefinition Width="*" />
+                                    <!-- Cột 3 -->
                         </Grid.ColumnDefinitions>
 
                         <!-- Text "Tùy chọn gửi" nằm giữa, spanning 4 cột ở hàng 0 -->
                         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="Tùy chọn gửi"
-                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontWeight="Bold" FontSize="16" Margin="0,0,0,10"
-                                   Foreground="#4A4A4A"/>
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
+                       FontSize="16" Margin="0,0,0,10" />
+
+
+                        <!-- Checkbox CR ở hàng 1, cột 3 -->
+                        <CheckBox Grid.Row="1" Grid.Column="1"  Content="CR (Carriage Return)"
+                      IsChecked="{Binding CdcVM.AppendCR}"  VerticalAlignment="Center" />
+
+                        <!-- Checkbox LF ở hàng 2, cột 3 -->
+                        <CheckBox Grid.Row="1" Grid.Column="3" Content="LF (Line Feed)"
+                      IsChecked="{Binding CdcVM.AppendLF}" VerticalAlignment="Center"/>
 
                         <!-- Nút Gửi file, nằm cột 1, gom hàng 1 và 2 -->
-                        <Button Grid.Row="1" Grid.Column="1" Grid.RowSpan="2"
-                                Margin="0,5,0,5"
+                        <Button Grid.Row="1" Grid.Column="5" 
                     Content="Gửi file"
                     Command="{Binding CdcVM.SendFileCommand}"
                     IsEnabled="{Binding CdcVM.IsSerialOpen}"
-
                     Style="{StaticResource CustomButtonStyle}"/>
-
-                        <!-- Checkbox CR ở hàng 1, cột 3 -->
-                        <CheckBox Grid.Row="3" Grid.Column="1"
-                      Content="CR (Carriage Return)"
-                      IsChecked="{Binding CdcVM.AppendCR}"
-                      FontSize="12"
-                      FontWeight="Normal"
-                      Margin="0,10,0,5"
-                      HorizontalAlignment="Left"/>
-
-                        <!-- Checkbox LF ở hàng 2, cột 3 -->
-                        <CheckBox Grid.Row="4" Grid.Column="1"
-                      Content="LF (Line Feed)"
-                      IsChecked="{Binding CdcVM.AppendLF}"
-                      FontSize="12"
-                      FontWeight="Normal"
-                      Margin="0,5,0,10"
-                      HorizontalAlignment="Left"/>
-
                     </Grid>
                 </GroupBox>
             </Border>
 
 
             <!-- Nhận dữ liệu -->
-            <Border Grid.Row="3" Grid.Column="1"
-        Margin="10"
+            <Border Grid.Row="3" Grid.Column="3"
         BorderBrush="#738A9C"
         BorderThickness="0"
         CornerRadius="5"
@@ -420,15 +413,16 @@
         BorderThickness="0"
         FontWeight="Bold"
         FontSize="16"  
-        Foreground="#4A4A4A"
+        Foreground="#262626"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
 
                     <!-- Dùng Grid để TextBox tự động chiếm hết -->
                     <Grid>
                         <TextBox x:Name="txtReceiveLog"
+                       Margin="5"
                      FontSize="12"
-                     Foreground="#4A4A4A"
+                     Foreground="#262626"
                      IsReadOnly="True"
                      TextWrapping="NoWrap"
                      VerticalScrollBarVisibility="Auto"
@@ -437,7 +431,6 @@
                      AcceptsTab="True"
                      Background="{x:Null}"
                      BorderThickness="0"
-                     Margin="0"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch"/>
                     </Grid>
@@ -447,11 +440,12 @@
 
 
             <!-- Hiển thị & Điều khiển nhận -->
-            <Border Grid.Row="3" Grid.Column="3"
-                          Margin="10"
-        BorderBrush="#2C3E50" BorderThickness="0" CornerRadius="5" 
+            <!--
+            <Border Grid.Row="1" Grid.Column="3"
+        BorderThickness="0" CornerRadius="5" 
         Background="White">
-                <GroupBox Header="Hiển thị &amp; Điều khiển nhận" Margin="10" BorderThickness="0" Foreground="#4A4A4A" FontWeight="Bold" FontSize="16" >
+
+                        <GroupBox Header="Hiển thị + Điều khiển nhận" BorderThickness="0"  Foreground="Black" FontSize="14" FontWeight="Bold" >
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,10" HorizontalAlignment="Left">
                             <Label Content="Display:" VerticalAlignment="Center" Foreground="#4A4A4A" FontSize="14"/>
@@ -465,13 +459,11 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,5" >
 
-                            <Button Content="Lưu log"
+                                    <Button Content="Lưu log"
                                 Command="{Binding CdcVM.SaveLogCommand}"
                                 Width="100"
                                 Style="{StaticResource CustomButtonStyle}"/>
-                            <TextBlock Text=""
-                               FontSize="12"/>
-                        </StackPanel>
+                                </StackPanel>
                         <Button Content="Xóa"
                                 Command="{Binding CdcVM.ClearReceiveCommand}"
                                  Style="{StaticResource CustomButtonStyle}"
@@ -481,6 +473,84 @@
                     </StackPanel>
                 </GroupBox>
             </Border>
+-->
+                    <Border Grid.Row="1" Grid.Column="3"
+                            BorderThickness="0" CornerRadius="5" 
+                            Background="White">
+                        <GroupBox  BorderThickness="0" Foreground="#262626" FontSize="14" FontWeight="Bold">
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng header -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- Hàng nội dung -->
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Cột 0 -->
+                                    <ColumnDefinition Width="5*" />
+                                    <!-- Cột 1 -->
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Cột 2 -->
+                                    <ColumnDefinition Width="5*" />
+
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Cột 1 -->
+                                    <ColumnDefinition Width="5*" />
+                                    <!-- Cột 2 -->
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Hàng tiêu đề -->
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6" Text="Hiển thị + Điều khiển nhận"
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
+                       FontSize="16"  />
+
+                                <!-- Cột 1: ComboBox Display -->
+                                <Grid Grid.Row="1" Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="Display " VerticalAlignment="Center" Grid.Column="0"/>
+                                    <ComboBox x:Name="cmbDisplayMode"
+              Style="{StaticResource CustomComboBoxStyle}"
+              SelectedIndex="0"
+              Grid.Column="1">
+                                        <ComboBoxItem Content="ASCII"/>
+                                        <ComboBoxItem Content="Hex"/>
+                                        <ComboBoxItem Content="Dec"/>
+                                    </ComboBox>
+                                </Grid>
+
+
+                                <!-- Cột 3: Lưu log -->
+                                <Button Grid.Row="1" Grid.Column="3"
+            Content="Lưu log"
+            Command="{Binding CdcVM.SaveLogCommand}"
+            Style="{StaticResource CustomButtonStyle}"/>
+
+                                <!-- Cột 5: Xóa -->
+                                <Button Grid.Row="1" Grid.Column="5" Content="Xóa"
+            Command="{Binding CdcVM.ClearReceiveCommand}"
+            Style="{StaticResource CustomButtonStyle}" />
+                            </Grid>
+                        </GroupBox>
+                    </Border>
+
+                    <Border Grid.Row="5" Grid.Column="1"  Grid.ColumnSpan="3"  
+                            BorderBrush="#FF172976"
+                       CornerRadius="10" Background="White" >
+
+                        <TextBlock Text="Trạng thái kết nối  " 
+                                   FontSize="30" FontWeight="Bold" 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Foreground="#FFDA6300"/>
+                    </Border>
+                </Grid>
+            </Border>
         </Grid>
-    </Border>
+    </Viewbox>
 </UserControl>

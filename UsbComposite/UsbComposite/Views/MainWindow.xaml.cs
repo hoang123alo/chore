@@ -52,7 +52,7 @@ namespace UsbComposite.Views
                     MainContentArea.Content = new UsbComportView(_mainViewModel);
                     break;
                 case 2:
-                    MainContentArea.Content = new TextBlock { Text = "CDC qua CAN", FontSize = 16 };
+                    MainContentArea.Content = new TextBlock { Text = "HID qua CAN", FontSize = 16 };
                     break;
                 case 3:
                     MainContentArea.Content = new TextBlock { Text = "Thông tin thiết bị", FontSize = 16 };
