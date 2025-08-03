@@ -9,7 +9,7 @@
         xmlns:helpers="clr-namespace:UsbComposite.Helpers"
         mc:Ignorable="d"
         Title="UC-Link" Height="700" Width="1250"
-        Background="#F8F9FA">
+        Background="White">
     <Window.Resources>
         <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#FFFFFF"/>
 
@@ -20,31 +20,33 @@
         <SolidColorBrush x:Key="TabSelectedForegroundBrush" Color="White"/>
         <SolidColorBrush x:Key="HeaderForegroundBrush" Color="#2C3E50"/>
         <SolidColorBrush x:Key="MainContentBackgroundBrush" Color="#FFFFFF"/>
-        
+
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
             <StackPanel>
-                <Border CornerRadius="10" Background="#f0f0f0" Margin="5,15,5,10" >
-                <StackPanel Orientation="Horizontal" 
+
+
+                <Border CornerRadius="10"  Margin="5,15,5,10" >
+                    <StackPanel Orientation="Horizontal" 
                 HorizontalAlignment="Center" 
                 Margin="0,20,0,10">
-                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
                    Text="&#xE713;"
-                   FontSize="50" Foreground="{StaticResource HeaderForegroundBrush}" VerticalAlignment="Center"
-                   Margin="10,15,5,15"/>
-                    <TextBlock Text="Hoang's device"
-                   Foreground="{StaticResource HeaderForegroundBrush}" 
+                   FontSize="50" VerticalAlignment="Center"
+                   Margin="10,15,5,15" Foreground="Black"/>
+                        <TextBlock Text="Hoang's device"
+                   Foreground="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" 
                    FontSize="16"
                    FontWeight="Bold"
                    VerticalAlignment="Center"/>
-                </StackPanel>
+                    </StackPanel>
                 </Border>
 
                 <TabControl x:Name="SidebarTabControl"
@@ -58,7 +60,7 @@
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="Height" Value="35"/>
-                            <Setter Property="Width" Value="200"/>
+                            <Setter Property="Width" Value="Auto"/>
                             <Setter Property="Padding" Value="10,0,0,0"/>
                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -88,7 +90,7 @@
                                             <Trigger Property="IsSelected" Value="True">
                                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource TabSelectedForegroundBrush}"/>
                                                 <Setter TargetName="border" Property="Background" Value="#FF4C61EC"/>
-                                                
+
                                                 <!-- Nền nhẹ nếu muốn -->
                                                 <Setter Property="Foreground" Value="{StaticResource TabSelectedForegroundBrush}"/>
                                             </Trigger>
@@ -121,7 +123,20 @@
                    Margin="0,0,10,0"
                    VerticalAlignment="Center"/>
                                 <TextBlock Text="Connect device" VerticalAlignment="Center" FontSize="14"/>
-                               
+
+                            </StackPanel>
+                        </TabItem.Header>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock FontFamily="Segoe MDL2 Assets"
+                   Text="&#xE804;"
+                   FontSize="16"
+                   Margin="0,0,10,0"
+                   VerticalAlignment="Center"/>
+                                <TextBlock Text="DignosticCan" VerticalAlignment="Center" FontSize="14"/>
                             </StackPanel>
                         </TabItem.Header>
                     </TabItem>
@@ -139,18 +154,6 @@
                         </TabItem.Header>
                     </TabItem>
 
-                    <TabItem>
-                        <TabItem.Header>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock FontFamily="Segoe MDL2 Assets"
-                   Text="&#xE804;"
-                   FontSize="16"
-                   Margin="0,0,10,0"
-                   VerticalAlignment="Center"/>
-                                <TextBlock Text="DignosticCan" VerticalAlignment="Center" FontSize="14"/>
-                            </StackPanel>
-                        </TabItem.Header>
-                    </TabItem>
 
                     <TabItem>
                         <TabItem.Header>
@@ -181,7 +184,13 @@
                 </TabControl>
             </StackPanel>
         </Border>
-
-        <ContentControl x:Name="MainContentArea" Grid.Column="1" Background="{StaticResource MainContentBackgroundBrush}"/>
+        <Border 
+            Grid.Column="1"
+            CornerRadius="15"
+            BorderBrush="#CCCCCC"
+            BorderThickness="0" Background="#FFF0F0F0" 
+           >
+            <ContentControl x:Name="MainContentArea"  Background="{StaticResource MainContentBackgroundBrush}" />
+        </Border>
     </Grid>
 </Window>

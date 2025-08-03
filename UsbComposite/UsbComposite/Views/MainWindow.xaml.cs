@@ -45,14 +45,13 @@ namespace UsbComposite.Views
             switch (SidebarTabControl.SelectedIndex)
             {
                 case 0:
-                    //MainContentArea.Content = new TextBlock { Text = "CDC qua UART", FontSize = 16 };
                     MainContentArea.Content = new ConnectDeviceView();
                     break;
                 case 1:
-                    MainContentArea.Content = new UsbComportView(_mainViewModel);
+                    MainContentArea.Content = new UsbHidCanView( _mainViewModel );
                     break;
                 case 2:
-                    MainContentArea.Content = new TextBlock { Text = "HID qua CAN", FontSize = 16 };
+                    MainContentArea.Content = new UsbComportView(_mainViewModel);
                     break;
                 case 3:
                     MainContentArea.Content = new TextBlock { Text = "Thông tin thiết bị", FontSize = 16 };

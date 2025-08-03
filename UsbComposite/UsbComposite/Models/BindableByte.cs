@@ -18,21 +18,28 @@ namespace UsbComposite.Models
             get => _value;
             set
             {
-                var trimmed = (value ?? "").Trim().ToUpper();
+                string input = (value ?? "").Trim().ToUpper();
 
-                // Kiểm tra nếu là hex hợp lệ
-                if (!_hexRegex.IsMatch(trimmed))
+                // ✅ Nếu chuỗi trống → chấp nhận (cho phép xóa sạch)
+                if (string.IsNullOrEmpty(input))
                 {
-                    // Nếu không hợp lệ → giữ nguyên
+                    _value = "";
+                    OnPropertyChanged(nameof(Value));
                     return;
                 }
 
-                if (_value != trimmed)
+                // ✅ Nếu hợp lệ hex thì mới cập nhật
+                if (_hexRegex.IsMatch(input))
                 {
-                    _value = trimmed;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+                    _value = input;
+                    OnPropertyChanged(nameof(Value));
                 }
+                // ❌ Nếu không hợp lệ → bỏ qua, không đổi (nhưng không cản xóa)
             }
+        }
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         public override string ToString() => Value;

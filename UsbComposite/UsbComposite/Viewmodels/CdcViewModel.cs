@@ -192,8 +192,16 @@ namespace UsbComposite.Viewmodels
             _uiUpdateTimer.Tick += UiUpdateTimer_Tick;
             _uiUpdateTimer.Start();
         }
+
         private void ExecuteSendFile()
         {
+            // Kiểm tra tình trạng kết nối từ _cdcService
+            if (!_cdcService.IsOpen)
+            {
+                IsSerialOpen = false; // Đồng bộ trạng thái ra UI
+                return;
+            }
+
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
                 Filter = "Supported Files|*.txt;*.hex;*.bin;*.dec|All files|*.*"
@@ -205,6 +213,7 @@ namespace UsbComposite.Viewmodels
                 LastSentFileName = $"Đã gửi: {System.IO.Path.GetFileName(dialog.FileName)}";
             }
         }
+
         // Property này để binding ra View
         private string _lastSentFileName;
         public string LastSentFileName
@@ -245,9 +254,10 @@ namespace UsbComposite.Viewmodels
                 OpenSerial(SelectedPort, SelectedBaudRate, SelectedParity, SelectedDataBits, SelectedStopBits);
                 IsSerialOpen = true;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                MessageBox.Show($"Open COM error: {ex.Message}");
+                //MessageBox.Show($"Open COM error: {ex.Message}");
+                MessageBox.Show($"Thiết bị đâu ???");
             }
         }
 
@@ -364,6 +374,12 @@ namespace UsbComposite.Viewmodels
 
         private void SendFrame(CdcFrame frame)
         {
+            // Kiểm tra tình trạng kết nối trước khi gửi
+            if (!_cdcService.IsOpen)
+            {
+                IsSerialOpen = false;
+                return;
+            }
 
             string data = frame.DataString;
             if (AppendCR) data += "\r";

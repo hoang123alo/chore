@@ -6,19 +6,19 @@
         xmlns:local="clr-namespace:UsbComposite.Views"
         xmlns:helpers="clr-namespace:UsbComposite.Helpers"
         mc:Ignorable="d"
-         Background="White">
+         >
 
     <UserControl.Resources>
         <helpers:InverseBoolConverter x:Key="InverseBoolConverter" />
 
-        <SolidColorBrush x:Key="DefaultForeground" Color="#4A4A4A"/>
+        <SolidColorBrush x:Key="DefaultForeground" Color="Black"/>
         <SolidColorBrush x:Key="DefaultBackground" Color="White"/>
         <SolidColorBrush x:Key="DefaultBorder" Color="#808080"/>
         <SolidColorBrush x:Key="AccentBlueBackground" Color="#FF4C61EC"/>
         <SolidColorBrush x:Key="AccentWhiteForeground" Color="White"/>
         <SolidColorBrush x:Key="HoverBackground" Color="White"/>
-        <SolidColorBrush x:Key="HoverBorder" Color="#A0A0A0"/>
-        <SolidColorBrush x:Key="ComboBoxActiveBorder" Color="#A0A0A0"/>
+        <SolidColorBrush x:Key="HoverBorder" Color="black"/>
+        <SolidColorBrush x:Key="ComboBoxActiveBorder" Color="Black"/>
 
         <SolidColorBrush x:Key="DisabledBackground" Color="#E0E0E0"/>
         <SolidColorBrush x:Key="DisabledForeground" Color="#A0A0A0"/>
@@ -201,13 +201,7 @@
 
     </UserControl.Resources>
     <Viewbox Stretch="Uniform">
-        <Grid Width="1300" Height="800">
-            <Border 
-            Background="#f0f0f0"
-            CornerRadius="20"
-            BorderBrush="#CCCCCC"
-            BorderThickness="0">
-                <Grid  Margin="5">
+        <Grid  Margin="5"  Width="1300" Height="800"   > 
                     <!-- 5 cột -->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -222,7 +216,9 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="5*" />
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="25*" />
+                        <RowDefinition Height="20*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="10*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="3*" />
                         <RowDefinition Height="*" />
@@ -247,71 +243,198 @@
 
 
                 <!-- Kết nối CDC  Background="#2C3E50"> Grid.ColumnSpan="3"  -->
-                    <Border Grid.Row="3" Grid.Column="1" CornerRadius="10" Background="White">
+                    <Border Grid.Row="3" Grid.Column="3" CornerRadius="10" Background="White" >
                         <GroupBox   
-                   BorderThickness="0" Foreground="#434343" FontWeight="Bold"   FontSize ="18">
+                   BorderThickness="0" Foreground="Black"   FontSize ="18">
                             <Grid >
                                 <!-- Định nghĩa 5 hàng -->
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="2*"/>
-                                    <!-- Hàng 0: Chiều cao tự động, cho 1 cột -->
-                                    <RowDefinition Height="*"/>
-                                    <!-- Hàng 1: Chiều cao tự động, cho 2 cột -->
-                                    <RowDefinition Height="4*"/>
-                                    <!-- Hàng 2: Chiều cao tự động, cho 3 cột -->
-                                    <RowDefinition Height="*"/>
-                                    <!-- Hàng 3: Chiều cao tự động, cho 2 cột -->
-                                    <RowDefinition Height="4*"/>
-                                    <!-- Hàng 4: Chiều cao tự động, cho 2 cột -->
-                                    <RowDefinition Height="3*"/>
-                                    <!-- Hàng 5: Chiều cao tự động, cho 3 cột -->
-                                    <RowDefinition Height="3*"/>
-                                    <!-- Hàng 6: Chiều cao tự động, cho 2 cột -->
-                                    <RowDefinition Height="*"/>
-                                    <!-- Hàng 7: Chiều cao tự động, cho 2 cột -->
-                                </Grid.RowDefinitions>
+                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="20*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
                                 <!-- Định nghĩa 6 cột (để linh hoạt chia 2 hoặc 3 cột) -->
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Cột 0 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 1 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 2 -->
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Cột 3 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 4 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 5 -->
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Cột 6 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 7 -->
-                                    <ColumnDefinition Width="3*"/>
-                                    <!-- Cột 8 -->
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Cột 9 -->
-                                </Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="*"/>
+                           
+                        </Grid.ColumnDefinitions>
 
                                 <!-- Hàng 0: Header -->
-                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10" >
-                                    <TextBlock Text="Comport"  HorizontalAlignment="Left" VerticalAlignment="Center" 
-                                       Foreground="#262626" FontWeight="Bold" FontSize ="24"/>
+                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
+                                    <TextBlock Text="Comport"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       FontWeight="Bold" FontSize ="24"/>
                                 </Border>
+                                
+                        <GroupBox  Grid.Row="2" Grid.Column="1" 
+                                       Header="Configuration"  Background="White" FontSize="18" FontFamily="Segoe UI Semibold" 
+                               >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                                <!-- Hàng 2: Com -->
-                                <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="5*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="5*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="1" Grid.Column="1">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <!-- Nội dung cho hàng nhỏ đầu tiên  -->
-                                        <TextBlock Grid.Row="0" Text="Com" HorizontalAlignment="Left" VerticalAlignment="Center"  />
-                                        <!-- Nội dung cho hàng nhỏ thứ hai -->
+
+                                        <TextBlock Grid.Row="0" Text="Com" HorizontalAlignment="Left" VerticalAlignment="Bottom"  />
                                         <ComboBox Grid.Row="1" x:Name="cmbComPorts" 
+                                          Style="{StaticResource CustomComboBoxStyle}" 
+                                      Height="auto" Width="auto"
+                                      ItemsSource="{Binding CdcVM.AvailablePorts}"
+                                      SelectedItem="{Binding CdcVM.SelectedPort}" SelectionChanged="CmbComPorts_SelectionChanged" />
+
+
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="1" Grid.Column="3">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="Baud Rate" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                                        <ComboBox  Grid.Row="1" x:Name="cmbBaudRate" Width="Auto" Height="Auto" 
+                                    Style="{StaticResource CustomComboBoxStyle}" 
+                                    ItemsSource="{Binding CdcVM.BaudRateOptions}"
+                                    SelectedItem="{Binding CdcVM.SelectedBaudRate}"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center" >
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                                
+                                
+                                <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border  Grid.Column="0">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="Data bits" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                                                <ComboBox Grid.Row="1" x:Name="cmbDataBits" Width="Auto" Height="Auto" 
+                                          Style="{StaticResource CustomComboBoxStyle}" 
+                                          ItemsSource="{Binding CdcVM.DataBitsOptions}"
+                                          SelectedItem="{Binding CdcVM.SelectedDataBits}">
+                                                </ComboBox>
+
+                                            </Grid>
+                                        </Border>
+                                        <Border  Grid.Column="2">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="Parity" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+
+                                                <ComboBox  Grid.Row="1" Style="{StaticResource CustomComboBoxStyle}" 
+                                              x:Name="cmbParity"
+                                              ItemsSource="{Binding CdcVM.ParityOptions}"
+                                              SelectedItem="{Binding CdcVM.SelectedParity}"
+                                              Width="Auto" Height="Auto"/>
+
+                                            </Grid>
+                                        </Border>
+                                        <Border  Grid.Column="4">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Text="Stop bits" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                                                <ComboBox Grid.Row="1" x:Name="cmbStopBits" Width="Auto" Height="Auto" 
+                                          ItemsSource="{Binding CdcVM.StopBitsOptions}"
+                                          SelectedItem="{Binding CdcVM.SelectedStopBits}"
+                                          Style="{StaticResource CustomComboBoxStyle}" >
+                                                </ComboBox>
+
+                                            </Grid>
+                                        </Border>
+
+                                    </Grid>
+                                    
+                                </Border>
+                                
+                                
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox  Grid.Row="4" Grid.Column="1" 
+                                       Header="Kết nối"  Background="White" FontSize="18" FontFamily="Segoe UI Semibold" >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="5*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="1" Grid.Column="1">
+                                    <Button Content="Open COM"
+                            Command="{Binding CdcVM.OpenComCommand}"
+                            IsEnabled="{Binding CdcVM.IsSerialOpen, Converter={StaticResource InverseBoolConverter}}"
+                            Width="Auto" Height="Auto" 
+                            Style="{StaticResource CustomButtonStyle}"/>
+                                </Border>
+
+                                <Border Grid.Row="1" Grid.Column="3">
+                                    <Button Content="Close COM"
+                            Command="{Binding CdcVM.CloseComCommand}"
+                            IsEnabled="{Binding CdcVM.IsSerialOpen}"
+                            Width="Auto" Height="Auto"
+                                Style="{StaticResource CustomButtonStyle}"/>
+                                </Border>
+
+                            </Grid>
+                        </GroupBox>
+
+
+                        <!-- 
+                                <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3">
+                                    <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Com" HorizontalAlignment="Left" VerticalAlignment="Bottom"  />
+                                <ComboBox Grid.Row="1" x:Name="cmbComPorts" 
                                           Style="{StaticResource CustomComboBoxStyle}" 
                                       Height="auto" Width="auto"
                                       ItemsSource="{Binding CdcVM.AvailablePorts}"
@@ -327,9 +450,8 @@
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
 
-                                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                                        <TextBlock Grid.Row="0" Text="Baud Rate" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                        <TextBlock Grid.Row="0" Text="Baud Rate" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
                                         <ComboBox  Grid.Row="1" x:Name="cmbBaudRate" Width="Auto" Height="Auto" 
                                     Style="{StaticResource CustomComboBoxStyle}" 
                                     ItemsSource="{Binding CdcVM.BaudRateOptions}"
@@ -340,19 +462,14 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- Hàng 2: 3 cột (mỗi cột kéo dài qua 2 cột con) -->
                                 <Border Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" >
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*"/>
-                                            <!-- Hàng nhỏ 1: Chiếm một phần không gian -->
                                             <RowDefinition Height="*"/>
-                                            <!-- Hàng nhỏ 2: Chiếm một phần không gian -->
                                         </Grid.RowDefinitions>
 
-                                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                                        <TextBlock Grid.Row="0" Text="Data bits" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                        <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                        <TextBlock Grid.Row="0" Text="Data bits" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
                                         <ComboBox Grid.Row="1" x:Name="cmbDataBits" Width="Auto" Height="Auto" 
                                           Style="{StaticResource CustomComboBoxStyle}" 
                                           ItemsSource="{Binding CdcVM.DataBitsOptions}"
@@ -367,9 +484,8 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                                        <TextBlock Grid.Row="0" Text="Parity" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                        <!-- Nội dung cho hàng nhỏ thứ hai -->
+    
+                                        <TextBlock Grid.Row="0" Text="Parity" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
 
                                         <ComboBox  Grid.Row="1" Style="{StaticResource CustomComboBoxStyle}" 
                                               x:Name="cmbParity"
@@ -386,9 +502,7 @@
 
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <!-- Nội dung cho hàng nhỏ thứ nhất -->
-                                        <TextBlock Grid.Row="0" Text="Stop bits" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                        <!-- Nội dung cho hàng nhỏ thứ hai -->
+                                        <TextBlock Grid.Row="0" Text="Stop bits" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
                                         <ComboBox Grid.Row="1" x:Name="cmbStopBits" Width="Auto" Height="Auto" 
                                           ItemsSource="{Binding CdcVM.StopBitsOptions}"
                                           SelectedItem="{Binding CdcVM.SelectedStopBits}"
@@ -397,7 +511,9 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- Hàng 3: 2 cột (mỗi cột kéo dài qua 3 cột con) -->
+
+
+
                                 <Border Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" >
                                     <Button Content="Open COM"
                             Command="{Binding CdcVM.OpenComCommand}"
@@ -412,58 +528,298 @@
                             IsEnabled="{Binding CdcVM.IsSerialOpen}"
                             Width="Auto" Height="Auto"
                                 Style="{StaticResource CustomButtonStyle}"/>
-                                </Border>
+                                </Border> -->
                             </Grid>
                         </GroupBox>
                     </Border>
 
 
-            <!--
-            <Border Grid.Row="3" Grid.Column="5"  
-                BorderBrush="#FF172976"
-             CornerRadius="10" Background="White"
-                     Margin="7">
-                <TextBlock Text="Loading ..." 
-               FontSize="20" FontWeight="Bold" 
-               HorizontalAlignment="Left" 
-               Width="380"/>
-            </Border> -->
 
-                    <!-- <Border Grid.Row="5" Grid.Column="1"  
-                BorderBrush="#FF172976"
-             CornerRadius="10" Background="White"
-                     Margin="7">
-                <TextBlock Text="Loading .. " 
-               FontSize="20" FontWeight="Bold" 
-               HorizontalAlignment="Left" 
-               Width="380"/>
-            </Border> -->
-
-
-                    <Border Grid.Row="3" Grid.Column="3"  
+                <!---USB HID -->
+                    <Border Grid.Row="3" Grid.Column="1"  Grid.RowSpan="3"
                 BorderBrush="#FF172976"
              CornerRadius="10" Background="White" >
 
-                        <TextBlock Text="USB HID " 
+                        <Grid   DataContext="{Binding CanVM}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="20*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="*"/>
+
+                            </Grid.RowDefinitions>
+
+                    <Grid  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="DiagnosticCan"  HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                         FontSize ="24" FontWeight="Bold"/>
+
+                        <Button Grid.Row="0" Grid.Column="3" Content="Default diagnostic" 
+                                Command="{Binding Config.SetDefaultFilterValuesCommand}"
+                                 Style="{StaticResource CustomButtonStyle}" Margin="7" FontSize="16" FontFamily="Segoe UI Semibold"/>
+
+                    </Grid>
+
+                    <GroupBox  Grid.Row="2" Grid.Column="1" 
+                                       Header="Configuration"  Background="White" FontSize="18" FontFamily="Segoe UI Semibold" 
+                               >
+                                <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="1" Grid.Column="1">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label  Grid.Row="0" Grid.Column="0"  Content="Baud Rate (kbit/s)"  />
+                                    <ComboBox   Grid.Row="1" 
+                                            ItemsSource="{Binding Config.BaudRateOptions}"
+                                            SelectedItem="{Binding Config.SelectedBaudRate}" 
+                                                Style="{StaticResource CustomComboBoxStyle}" />
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="3">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label  Grid.Row="0" Grid.Column="0"  Content="Sample point"  />
+                                    <TextBox Grid.Row="1"  Text="{Binding Config.SamplePointText, 
+                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             LostFocus="SamplePointTextBox_LostFocus"/>
+                                    
+                                </Grid>
+                            </Border>
+                                    
+                            <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"  >
+
+                                <Grid x:Name="BitTimingBar" HorizontalAlignment="Stretch" SizeChanged="BitTimingBar_SizeChanged">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="{Binding Config.SyncSegWidth}" />
+                                            <ColumnDefinition Width="{Binding Config.Seg1Width}" />
+                                            <ColumnDefinition Width="{Binding Config.Seg2Width}" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Rectangle Grid.Column="0" Fill="Gray" />
+                                        <Rectangle Grid.Column="1" Fill="Green" />
+                                        <Rectangle Grid.Column="2" Fill="Orange" />
+                                    </Grid>
+
+                            </Border>
+                        </Grid>
+                    </GroupBox>
+                            
+                            
+                    <GroupBox  Grid.Row="6" Grid.Column="1" 
+                                       Header="Kết nối"  Background="White" FontSize="18" FontFamily="Segoe UI Semibold" >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="1" Grid.Column="1">
+                                <Button Content="Kết nối CAN"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                Command="{Binding ConnectCanCommand}"
+                                                IsEnabled="{Binding IsDisconnected}"/>
+                                
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="3">
+                                <Button Content="Ngắt kết nối CAN"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                Command="{Binding DisconnectCanCommand}"
+                                                IsEnabled="{Binding IsConnected}"/>
+                            </Border>
+
+                        </Grid>
+                    </GroupBox>
+                    
+                    <GroupBox  Grid.Row="4" Grid.Column="1" 
+                                       Header="Acceptance Filter"  Background="White" FontSize="18" FontFamily="Segoe UI Semibold" >
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="6*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="1" Grid.Column="1">
+                                <RadioButton Content="Standard (11-bit ID)"
+                                            IsChecked="{Binding Config.IsStandardIdFilter, Mode=TwoWay}"
+                                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" />
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="3">
+                                <RadioButton Content="Extended (29-bit ID)"
+                                             IsChecked="{Binding Config.IsExtendedIdFilter, Mode=TwoWay}" 
+                                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                         
+                            </Border>
+
+                            <Border Grid.Row="3" Grid.Column="1">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock   Grid.Row="0"  Text="From ID(Hex):" VerticalAlignment="Center"/>
+                                    <TextBox  Grid.Row="1"  Text="{Binding Config.FilterFromId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Row="3" Grid.Column="3" >
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Text="To ID(Hex):" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                    <TextBox Grid.Row="1"  Text="{Binding Config.FilterToId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </GroupBox> 
+
+
+                    <!--
+                            <GroupBox Header="Cấu hình CAN Protocol" Grid.Row="0" Grid.Column="0" Margin="0,0,10,10"
+          HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                <StackPanel Margin="5">
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <Label Content="Baud Rate (kbit/s):" />
+                                        <ComboBox Margin="15,0,0,0" Width="90" ItemsSource="{Binding Config.BaudRateOptions}"
+                                            SelectedItem="{Binding Config.SelectedBaudRate}" />
+                                    </StackPanel>
+
+                                    <GroupBox Header="CAN ID Filter" Margin="0,5,0,0">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                                                <RadioButton Content="Standard (11-bit ID)"
+             IsChecked="{Binding Config.IsStandardIdFilter, Mode=TwoWay}" />
+                                                <RadioButton Content="Extended (29-bit ID)"
+             IsChecked="{Binding Config.IsExtendedIdFilter, Mode=TwoWay}" Margin="15,0,0,0"/>
+                                            </StackPanel>
+
+                                            <Grid Margin="0,0,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="From ID(Hex):" VerticalAlignment="Center"/>
+                                                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Config.FilterFromId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" Margin="5,0"/>
+
+
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="To ID(Hex):" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Config.FilterToId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" Margin="5,5,0,0"/>
+                                            </Grid>
+
+                                            <Button Content="Default Values" Command="{Binding Config.SetDefaultFilterValuesCommand}" Margin="0,5,0,0" HorizontalAlignment="Left" Padding="10,3"/>
+                                        </StackPanel>
+                                    </GroupBox>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <Button Content="Kết nối CAN"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                Command="{Binding ConnectCanCommand}"
+                                                IsEnabled="{Binding IsDisconnected}"/>
+                                        <Button Content="Ngắt kết nối CAN"
+                                                Style="{StaticResource CustomButtonStyle}"
+                                                Command="{Binding DisconnectCanCommand}"
+                                                IsEnabled="{Binding IsConnected}"/>
+                                    </StackPanel>
+
+                                </StackPanel>
+                            </GroupBox>
+                            
+                            -->
+
+
+
+                        </Grid>
+                    </Border>  
+                    <!-- Hàng dưới cùng -->        
+
+                           
+        <TextBlock Text="⚠️ Vui lòng kết nối thiết bị trước khi thao tác" 
+               Grid.Row="7" Grid.Column="0"  Grid.ColumnSpan="5" 
+               FontSize="20" Foreground="#FFD62152" 
+               HorizontalAlignment="Center"
+               Margin="0,10,0,0" />
+
+
+
+                    <Border Grid.Row="5" Grid.Column="3"   
+                BorderBrush="#FF172976"
+             CornerRadius="10" Background="White"
+                   >
+                        <TextBlock Text=" Cấu hình I2C" 
                FontSize="20" FontWeight="Bold" 
-               HorizontalAlignment="Left" 
-               />
+               HorizontalAlignment="Center" 
+                            VerticalAlignment="Top" 
+                                   
+                           />
                     </Border>
 
 
-
-
-
-                    <!-- Hàng dưới cùng -->
-                    
-        <TextBlock Text="⚠️ Vui lòng kết nối thiết bị trước khi thao tác" 
-               Grid.Row="5" Grid.Column="0"  Grid.ColumnSpan="5" 
-               FontSize="20" Foreground="#FFD62152" 
-               HorizontalAlignment="Center"
-               Margin="0,10,0,0" /> 
-
                 </Grid>
-            </Border>
-        </Grid>
+
     </Viewbox>
+            
 </UserControl>

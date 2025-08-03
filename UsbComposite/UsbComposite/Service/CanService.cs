@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+
 namespace UsbComposite.Service
 {
     public class CanService : IDisposable
@@ -21,6 +23,7 @@ namespace UsbComposite.Service
 
         public event Action<byte[]> FrameReceived;
 
+        public event Action Disconnected;
         // Bổ sung phương thức để lấy kích thước payload của HID report (nếu cần)
         public int GetHidReportPayloadSize()
         {
@@ -71,14 +74,27 @@ namespace UsbComposite.Service
             try
             {
                 _stream.Write(packet, 0, packet.Length);
-                System.Diagnostics.Debug.WriteLine($"Sent HID report (Report ID: {reportId:X2}): {BitConverter.ToString(packet)}");
+                //System.Diagnostics.Debug.WriteLine($"Sent HID report (Report ID: {reportId:X2}): {BitConverter.ToString(packet)}");
                 return true;
             }
-            catch (Exception ex) // Bắt ngoại lệ cụ thể để log chi tiết hơn
+            
+            catch (IOException ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error sending HID frame: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"IO Exception: {ex.Message}");
+                Disconnected?.Invoke();
+               // MessageBox.Show($"Tôi đã tính tới trường hợp này rồi !!! kết nối lại thiết bị đi  ");
                 return false;
             }
+            /*
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Other exception: {ex.Message}");
+                Disconnected?.Invoke();
+                MessageBox.Show($"Tôi đã tính tới trường hợp này rồi !!! kết nối lại thiết bị đi ");
+
+                return false;
+            }
+            */
         }
 
         public bool SendFrame(byte[] data)

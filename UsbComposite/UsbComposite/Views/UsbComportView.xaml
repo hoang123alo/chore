@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" Background="White">
+             mc:Ignorable="d" >
     <UserControl.Resources>
-        <SolidColorBrush x:Key="DefaultForeground" Color="#4A4A4A"/>
+        <SolidColorBrush x:Key="DefaultForeground" Color="black"/>
         <SolidColorBrush x:Key="DefaultBackground" Color="White"/>
         <SolidColorBrush x:Key="DefaultBorder" Color="#808080"/>
         <SolidColorBrush x:Key="AccentBlueBackground" Color="#FF4C61EC"/>
         <SolidColorBrush x:Key="AccentWhiteForeground" Color="White"/>
         <SolidColorBrush x:Key="HoverBackground" Color="White"/>
-        <SolidColorBrush x:Key="HoverBorder" Color="#A0A0A0"/>
-        <SolidColorBrush x:Key="ComboBoxActiveBorder" Color="#A0A0A0"/>
+        <SolidColorBrush x:Key="HoverBorder" Color="black"/>
+        <SolidColorBrush x:Key="ComboBoxActiveBorder" Color="Black"/>
 
         <SolidColorBrush x:Key="DisabledBackground" Color="#E0E0E0"/>
         <SolidColorBrush x:Key="DisabledForeground" Color="#A0A0A0"/>
@@ -198,7 +198,7 @@
     <Viewbox Stretch="Uniform">
         <Grid Width="1300" Height="800">
             <Border 
-            Background="#f0f0f0"
+           
             CornerRadius="20"
             BorderBrush="#CCCCCC"
             BorderThickness="0">
@@ -240,9 +240,7 @@
                     <TextBlock Grid.Row="0"
                    Text="Gửi từng dòng"
                    FontSize="16"
-                   FontWeight="Bold"
-                   Foreground="#262626"
-                   />
+                   FontFamily="Segoe UI Semibold"/>
 
                     <!-- Hàng 2 -->
                     <Border Grid.Row="1" BorderThickness="0" Background="White">
@@ -257,17 +255,17 @@
               BorderThickness="0"
               GridLinesVisibility="None"
               FontSize="12"
-              Foreground="#4A4A4A" 
+              FontFamily="Segoe UI Semibold" 
              >
 
                             <DataGrid.Resources>
                                 <!-- Header style -->
                                 <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Foreground" Value="#4A4A4A"/>
+                                    <Setter Property="Foreground" Value="Black"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                            <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="Background" Value="White"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Background" Value="White"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                 </Style>
 
@@ -279,7 +277,7 @@
                                     <!-- Comment 2 dòng dưới nếu muốn tắt viền dưới -->
                                     <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                             <Setter Property="BorderBrush" Value="#FF979393"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
                                             <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                             <Style.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
@@ -293,9 +291,23 @@
                             </DataGrid.Resources>
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Data" Width="*" Binding="{Binding DataString, UpdateSourceTrigger=PropertyChanged}" />
+                                        <DataGridTextColumn Header="Data" Width="*" Binding="{Binding DataString, UpdateSourceTrigger=PropertyChanged}">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="Padding" Value="4,0,0,0"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                                    <Setter Property="Padding" Value="4,0,0,0"/>
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
 
-                                <DataGridTemplateColumn Header="Type" Width="90">
+                                        <DataGridTemplateColumn Header="Type" Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <ComboBox 
@@ -348,7 +360,7 @@
             <Border Grid.Row="1" Grid.Column="1"
         BorderBrush="#2C3E50" BorderThickness="0" CornerRadius="5" 
         Background="White">
-                <GroupBox  BorderThickness="0" Foreground="Black" FontSize="14" FontWeight="Bold">
+                <GroupBox  BorderThickness="0" Foreground="Black" FontSize="14" FontFamily="Segoe UI Semibold" >
 
                     <!-- Bên trong GroupBox tạo Grid 4 hàng 4 cột -->
                     <Grid>
@@ -411,11 +423,9 @@
         BorderBrush="#738A9C"
         Margin="0,10,10,10"
         BorderThickness="0"
-        FontWeight="Bold"
         FontSize="16"  
-        Foreground="#262626"
         HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch">
+        VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold">
 
                     <!-- Dùng Grid để TextBox tự động chiếm hết -->
                     <Grid>
@@ -477,7 +487,7 @@
                     <Border Grid.Row="1" Grid.Column="3"
                             BorderThickness="0" CornerRadius="5" 
                             Background="White">
-                        <GroupBox  BorderThickness="0" Foreground="#262626" FontSize="14" FontWeight="Bold">
+                        <GroupBox  BorderThickness="0" Foreground="#262626" FontSize="14" FontFamily="Segoe UI Semibold">
                             <Grid >
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>

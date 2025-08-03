@@ -13,6 +13,8 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Media;
 
 namespace UsbComposite.Viewmodels
 {
@@ -25,12 +27,18 @@ namespace UsbComposite.Viewmodels
 
         public Action ScrollToLatestFrame { get; set; }
 
-        private Queue<CanFrame> _frameBuffer = new Queue<CanFrame>();
+        // private Queue<CanFrame> _frameBuffer = new Queue<CanFrame>();
+        private Queue<CanFrameEx> _frameBuffer = new Queue<CanFrameEx>();
+
         private DispatcherTimer _uiUpdateTimer;
         private const int UI_UPDATE_INTERVAL_MS = 50;
         private const int MAX_FRAMES_PER_UPDATE = 100;
 
-        public ObservableCollection<CanFrame> ReceivedFrames { get; } = new ObservableCollection<CanFrame>();
+        //public ObservableCollection<CanFrame> ReceivedFrames { get; } = new ObservableCollection<CanFrame>();
+        public ObservableCollection<CanFrameEx> ReceivedFrames { get; } = new ObservableCollection<CanFrameEx>();
+
+
+
         public ObservableCollection<CanFrame> CanFrames { get; } = new ObservableCollection<CanFrame>();
         public ObservableCollection<byte> DlcOptions { get; } = new ObservableCollection<byte>(Enumerable.Range(0, 9).Select(i => (byte)i));
         public ObservableCollection<CanFrame.CanFrameType> FrameTypeOptions { get; } =
@@ -64,13 +72,30 @@ namespace UsbComposite.Viewmodels
             }
         }
 
+        private bool _isDeviceConnected;
+        public bool IsDeviceConnected
+        {
+            get => _isDeviceConnected;
+            set
+            {
+                _isDeviceConnected = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private void StartCyclicSendWithStopwatch(CanFrame frame)
         {
             string key = $"frame_{frame.FrameIndex}";
             var data = frame.ToBytes();
-            int intervalMs = frame.CycleTimeMs;
 
-            Debug.WriteLine($"[StartCyclic] Chuẩn bị gửi: {key} mỗi {intervalMs}ms");
+            // Chuyển string sang int, nếu không hợp lệ thì gán mặc định 1000ms
+            if (!int.TryParse(frame.CycleTimeMs, out int intervalMs))
+            {
+                intervalMs = 1000;
+            }
+
+            //Debug.WriteLine($"[StartCyclic] Chuẩn bị gửi: {key} mỗi {intervalMs}ms");
 
             StopCyclicSend(key);
 
@@ -90,7 +115,6 @@ namespace UsbComposite.Viewmodels
 
                     if (now >= nextTick)
                     {
-                        Debug.WriteLine($"[Send] Gửi chu kỳ: {key} lúc {DateTime.Now:HH:mm:ss.fff}");
                         _canService.SendFrame(data, 0x00);
                         nextTick += intervalMs;
                     }
@@ -105,6 +129,7 @@ namespace UsbComposite.Viewmodels
         }
 
 
+
         private void StopCyclicSend(string key)
         {
             if (_cyclicSendTokens.TryGetValue(key, out var cts))
@@ -114,38 +139,7 @@ namespace UsbComposite.Viewmodels
                 //  Debug.WriteLine($"[Cyclic] Stopped cyclic send for Key={key}");
             }
         }
-        /*
-        private void SendCanFrame(CanFrame frame)
-        {
-            if (!_canService.IsConnected || frame == null)
-                return;
 
-            string key = $"frame_{frame.FrameIndex}";
-
-            if (frame.IsCyclic && frame.CycleTimeMs > 0)
-            {
-                if (_cyclicSendTokens.ContainsKey(key))
-                {
-                    StopCyclicSend(key);
-                }
-                else
-                {
-                    StartCyclicSendWithStopwatch(frame);
-                }
-            }
-            else
-            {
-                if (_cyclicSendTokens.ContainsKey(key))
-                {
-                    StopCyclicSend(key);
-                }
-
-                var bytes = frame.ToBytes();
-                _canService.SendFrame(bytes, 0x00);
-              //  Debug.WriteLine($"[OneShot] Sent frame Key={key} at {DateTime.Now:HH:mm:ss.fff}: {BitConverter.ToString(bytes)}");
-            }
-        }
-        */
         private void SendCanFrame(CanFrame frame)
         {
             if (!_canService.IsConnected || frame == null)
@@ -173,6 +167,22 @@ namespace UsbComposite.Viewmodels
             _uiUpdateTimer = new DispatcherTimer();
             _uiUpdateTimer.Interval = TimeSpan.FromMilliseconds(UI_UPDATE_INTERVAL_MS);
             _uiUpdateTimer.Tick += UiUpdateTimer_Tick;
+
+            
+            _canService.Disconnected += () =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (IsConnected)  // Tránh set nhiều lần
+                    {
+                        IsConnected = false;
+                        Debug.WriteLine("Device disconnected due to SendFrame error.");
+                    }
+                });
+            };
+            
+
+
         }
 
         private void CanFrames_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -196,28 +206,7 @@ namespace UsbComposite.Viewmodels
                 }
             }
         }
-
-        /*
-        private void Frame_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (sender is CanFrame frame && e.PropertyName == nameof(CanFrame.IsCyclic))
-            {
-                string key = $"frame_{frame.FrameIndex}";
-
-                if (frame.IsCyclic && frame.CycleTimeMs > 0)
-                {
-                    StartCyclicSendWithStopwatch(frame);
-                }
-                else
-                {
-                    StopCyclicSend(key);
-                }
-            }
-        }
-        */
-
-
-
+     
         private void Frame_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!(sender is CanFrame frame)) return;
@@ -228,10 +217,18 @@ namespace UsbComposite.Viewmodels
 
             if (e.PropertyName == nameof(CanFrame.IsCyclic))
             {
-                if (frame.IsCyclic && frame.CycleTimeMs > 0)
+                if (frame.IsCyclic)
                 {
-                    Debug.WriteLine($"[Cycle] Bắt đầu gửi lặp: {key}");
-                    StartCyclicSendWithStopwatch(frame);
+                    if (int.TryParse(frame.CycleTimeMs, out int cycleTime) && cycleTime > 0)
+                    {
+                        Debug.WriteLine($"[Cycle] Bắt đầu gửi lặp: {key}");
+                        StartCyclicSendWithStopwatch(frame);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[Cycle] CycleTimeMs không hợp lệ hoặc <= 0: {frame.CycleTimeMs}");
+                        StopCyclicSend(key);
+                    }
                 }
                 else
                 {
@@ -248,9 +245,6 @@ namespace UsbComposite.Viewmodels
             }
         }
 
-
-
-
         private void ExecuteClearReceive()
         {
             _frameBuffer.Clear();
@@ -258,6 +252,7 @@ namespace UsbComposite.Viewmodels
             Debug.WriteLine("CAN: Đã gọi ClearReceiveCommand");
         }
         private bool _isFrameHandlerAttached = false;
+
 
         private void ConnectCan()
         {
@@ -282,6 +277,7 @@ namespace UsbComposite.Viewmodels
             {
                 IsConnected = false;
                 Debug.WriteLine("❌ Kết nối thiết bị HID thất bại. Kiểm tra thiết bị và driver.");
+                MessageBox.Show("Thiết bị đâu ???");
             }
         }
 
@@ -318,92 +314,151 @@ namespace UsbComposite.Viewmodels
             IsConnected = false;
             Debug.WriteLine("CAN đã ngắt kết nối.");
         }
+
         private void OnFrameReceived(byte[] data)
         {
-            //   Console.WriteLine($"🟢 Frame Received Handler called at {DateTime.Now:HH:mm:ss.fff}");
-
-            if (data == null || data.Length < 14)
+            if (data == null || data.Length < 18)
                 return;
 
             byte cmd = data[0];
-            //   Console.WriteLine($"🔍 FrameReceived invoked, CMD: {cmd:X2}");
-
             if (cmd != 0x03)
                 return;
 
-            // Byte 1: DLC (4 bit cao), FrameType (1 bit thấp)
             byte rawInfo = data[1];
             byte dlc = (byte)((rawInfo >> 4) & 0x0F);
-            bool isExtended = (rawInfo & 0x08) != 0;
+            bool isExtended = (rawInfo & 0x04) != 0;
 
             if (data.Length < 6 + dlc + 4)
-            {
-                //   Debug.WriteLine("❌ Not enough data for full frame.");
                 return;
-            }
 
-            // Byte 2~5: CAN ID (4 bytes Big-Endian)
             uint canId = ((uint)data[2] << 24) |
                          ((uint)data[3] << 16) |
                          ((uint)data[4] << 8) |
                          data[5];
 
-            // Byte 6~(6+dlc-1): Data Payload
             byte[] payload = new byte[dlc];
             Array.Copy(data, 6, payload, 0, dlc);
 
-            // Byte 6+dlc ~ 6+dlc+3: CycleTime (4 bytes Big-Endian)
-            //  int cycleOffset = 6 + dlc;
             uint rawCycle = ((uint)data[14] << 24) |
                             ((uint)data[15] << 16) |
                             ((uint)data[16] << 8) |
                             data[17];
-            int cycleTimeMs = (int)(rawCycle * 0.1); // mỗi đơn vị = 100us → 0.1ms
 
             string idFormatted = isExtended
                 ? $"0x{canId:X8}"
                 : $"0x{(canId & 0x7FF):X3}";
 
-            var newFrame = new CanFrame
-            {
-                Timestamp = DateTime.Now,
-                CanId = idFormatted,
-                FrameType = isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard,
-                Dlc = dlc,
-                CycleTimeMs = cycleTimeMs,
-                IsCyclic = rawCycle > 0, // flag cho cột "Cycle"
-                DataBytesHex = new ObservableCollection<BindableByte>(
-                    payload.Select(b => new BindableByte { Value = b.ToString("X2") })
-                )
-            };
+            // Tìm frame đã tồn tại dựa trên CAN ID và FrameType
+            var existingFrame = ReceivedFrames.FirstOrDefault(f =>
+                (f as CanFrameEx)?.CanIdAsUInt == canId &&
+                f.FrameType == (isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard));
 
-            _frameBuffer.Enqueue(newFrame);
+            if (existingFrame != null && existingFrame is CanFrameEx existingEx)
+            {
+                // Kiểm tra dữ liệu mới có khác với dữ liệu cũ không
+                bool isDataChanged = existingEx.Dlc != dlc ||
+                                     !existingEx.DataBytesHex.Select(b => b.Value)
+                                        .SequenceEqual(payload.Select(b => b.ToString("X2")));
+
+                if (isDataChanged)
+                {
+                    existingEx.UpdateData(payload, dlc);
+
+                    // Tính diff trên giá trị cũ trước khi cập nhật
+                    long diff = (long)rawCycle - (long)existingEx.LastTimestampFromMcu;
+                    if (diff < 0)
+                        diff += 0x100000000;
+
+                    existingEx.CycleTimeMsInt = (diff / 10.0);
+
+                    // Cập nhật timestamp mới
+                    existingEx.LastTimestampFromMcu = rawCycle;
+                }
+                else
+                {
+                    long diff = (long)rawCycle - (long)existingEx.LastTimestampFromMcu;
+                    if (diff < 0)
+                        diff += 0x100000000;
+
+                    existingEx.CycleTimeMsInt = (diff / 10.0);
+
+                    existingEx.LastTimestampFromMcu = rawCycle;
+                }
+
+
+                existingEx.Timestamp = DateTime.Now;
+                existingEx.OnPropertyChanged(nameof(existingEx.Timestamp));
+                existingEx.OnPropertyChanged(nameof(existingEx.CycleTimeMsDisplay));
+            }
+            else
+            {
+                // Nếu là frame mới chưa có trong ReceivedFrames
+                var newFrame = new CanFrameEx
+                {
+                    Timestamp = DateTime.Now,
+                    CanId = idFormatted,
+                    FrameType = isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard,
+                    LastTimestampFromMcu = rawCycle,
+                    CycleTimeMsInt = 1000,
+                };
+
+                newFrame.UpdateData(payload, dlc);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ReceivedFrames.Add(newFrame);
+                });
+            }
         }
+
 
 
         private void UiUpdateTimer_Tick(object sender, EventArgs e)
         {
-            int framesAddedThisTick = 0;
+            int processed = 0;
 
-            try
+            while (_frameBuffer.Count > 0 && processed < MAX_FRAMES_PER_UPDATE)
             {
-                while (_frameBuffer.Count > 0 && framesAddedThisTick < MAX_FRAMES_PER_UPDATE)
-                {
-                    var frame = _frameBuffer.Dequeue();
-                    ReceivedFrames.Add(frame);
-                    framesAddedThisTick++;
-                }
+                var frame = _frameBuffer.Dequeue();
+                processed++;
 
-                if (framesAddedThisTick > 0)
+                var existing = ReceivedFrames.FirstOrDefault(f =>
+                    f.CanId == frame.CanId &&
+                    f.FrameType == frame.FrameType);
+
+                if (existing != null && existing is CanFrameEx existingEx && frame is CanFrameEx newEx)
                 {
+                    // So sánh data và DLC có khác không
+                    bool isDataDifferent = existingEx.Dlc != newEx.Dlc ||
+                                           !existingEx.DataBytesHex.Select(b => b.Value).SequenceEqual(newEx.DataBytesHex.Select(b => b.Value));
+
+                    if (isDataDifferent)
+                    {
+                        // Cập nhật DLC và data dùng hàm chuyên biệt
+                        existingEx.UpdateData(newEx.DataBytesHex.Select(b => Convert.ToByte(b.Value, 16)).ToArray(), newEx.Dlc);
+                    }
+
+                    // Luôn cập nhật cycle time từ giá trị trong newEx (đã được tính đúng trong OnFrameReceived)
+                    existingEx.CycleTimeMsInt = newEx.CycleTimeMsInt;
+
+                    // Cập nhật thời gian nhận frame
+                    existingEx.Timestamp = newEx.Timestamp;
+
+                    existingEx.OnPropertyChanged(nameof(existingEx.CycleTimeMsDisplay));
+                    existingEx.OnPropertyChanged(nameof(existingEx.Timestamp));
+                }
+                else
+                {
+                    // Thêm frame mới
+                    ReceivedFrames.Add(frame);
                     ScrollToLatestFrame?.Invoke();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in UiUpdateTimer_Tick: {ex.Message}");
-            }
         }
+
+
+
+
 
         private const byte HID_OUTPUT_REPORT_ID = 0x00;
 
@@ -412,11 +467,13 @@ namespace UsbComposite.Viewmodels
             if (!_canService.IsConnected)
             {
                 Debug.WriteLine("Không thể gửi cấu hình: Dịch vụ HID chưa kết nối.");
+                MessageBox.Show("Thiết bị đâu ???");
                 return;
             }
 
             ushort baudRate = (ushort)Config.SelectedBaudRate;
-            byte filterType = Config.IsStandardIdFilter ? (byte)0x00 : (byte)0x01;
+            byte filterType = Config.IsStandardIdFilter ? (byte)0x00 : (byte)0x04;
+            ushort samplePointValue = (ushort)(Config.SamplePoint * 10.0f);
 
             uint filterFromId = 0;
             if (!string.IsNullOrEmpty(Config.FilterFromId))
@@ -424,10 +481,30 @@ namespace UsbComposite.Viewmodels
                 try
                 {
                     filterFromId = Convert.ToUInt32(Config.FilterFromId.Replace("0x", ""), 16);
+
+                    // Kiểm tra giới hạn ID
+                    if (Config.IsStandardIdFilter)
+                    {
+                        if (filterFromId > 0x7FF)
+                            throw new ArgumentOutOfRangeException(nameof(filterFromId), $"FilterFromId không được lớn hơn 0x7FF (2047).");
+                    }
+                    else
+                    {
+                        if (filterFromId > 0x1FFFFFFF)
+                            throw new ArgumentOutOfRangeException(nameof(filterFromId), $"FilterFromId không được lớn hơn 0x1FFFFFFF (536870911).");
+                    }
                 }
                 catch (FormatException)
                 {
-                    Debug.WriteLine($"Định dạng FilterFromId không hợp lệ: {Config.FilterFromId}");
+                   
+                    Config.FilterFromId = Config.IsStandardIdFilter ? "0" : "0";
+                    filterFromId = 0;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                   
+                    Config.FilterFromId = Config.IsStandardIdFilter ? "0" : "0";
+                    filterFromId = 0;
                 }
             }
 
@@ -437,31 +514,87 @@ namespace UsbComposite.Viewmodels
                 try
                 {
                     filterToId = Convert.ToUInt32(Config.FilterToId.Replace("0x", ""), 16);
+
+                    if (Config.IsStandardIdFilter)
+                    {
+                        if (filterToId > 0x7FF)
+                            throw new ArgumentOutOfRangeException(nameof(filterToId), $"FilterToId không được lớn hơn 0x7FF (2047).");
+                    }
+                    else
+                    {
+                        if (filterToId > 0x1FFFFFFF)
+                            throw new ArgumentOutOfRangeException(nameof(filterToId), $"FilterToId không được lớn hơn 0x1FFFFFFF (536870911).");
+                    }
                 }
                 catch (FormatException)
                 {
-                    Debug.WriteLine($"Định dạng FilterToId không hợp lệ: {Config.FilterToId}");
+                    Config.FilterToId = Config.IsStandardIdFilter ? "7FF" : "1FFFFFFF";
+                    filterToId = Config.IsStandardIdFilter ? 0x7FFu : 0x1FFFFFFFu;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Config.FilterToId = Config.IsStandardIdFilter ? "7FF" : "1FFFFFFF";
+                    filterToId = Config.IsStandardIdFilter ? 0x7FFu : 0x1FFFFFFFu;
                 }
             }
 
+
+            uint range = filterToId - filterFromId + 1;
+            bool isPowerOfTwo = (range & (range - 1)) == 0;
+
+            // Nếu không phải lũy thừa của 2, làm tròn lên
+            if (!isPowerOfTwo)
+            {
+                uint nextPowerOfTwo = 1;
+                while (nextPowerOfTwo < range) nextPowerOfTwo <<= 1;
+                range = nextPowerOfTwo;
+            }
+
+            uint mask = ~((uint)(range - 1));
+            uint alignedFromId = filterFromId & mask;
+            uint alignedToId = alignedFromId + range - 1;
+
+            bool adjusted = (filterFromId != alignedFromId || filterToId != alignedToId);
+
+            // Nếu cần điều chỉnh
+            if (adjusted)
+            {
+                filterFromId = alignedFromId;
+                filterToId = alignedToId;
+
+                Config.FilterFromId = "0x" + filterFromId.ToString("X");
+                Config.FilterToId = "0x" + filterToId.ToString("X");
+
+            }
+
+
+
             byte[] configMessage = new byte[_canService.GetHidReportPayloadSize()];
             Array.Clear(configMessage, 0, configMessage.Length);
-
+            // Header
             configMessage[0] = 0x01;
 
             configMessage[1] = (byte)(baudRate & 0xFF);
             configMessage[2] = (byte)((baudRate >> 8) & 0xFF);
-            configMessage[3] = filterType;
 
-            configMessage[4] = (byte)(filterFromId & 0xFF);
-            configMessage[5] = (byte)((filterFromId >> 8) & 0xFF);
-            configMessage[6] = (byte)((filterFromId >> 16) & 0xFF);
-            configMessage[7] = (byte)((filterFromId >> 24) & 0xFF);
+            //  samplePoint 
+            configMessage[3] = (byte)(samplePointValue & 0xFF);
+            configMessage[4] = (byte)((samplePointValue >> 8) & 0xFF);
 
-            configMessage[8] = (byte)(filterToId & 0xFF);
-            configMessage[9] = (byte)((filterToId >> 8) & 0xFF);
-            configMessage[10] = (byte)((filterToId >> 16) & 0xFF);
-            configMessage[11] = (byte)((filterToId >> 24) & 0xFF);
+            //  filterType 
+            configMessage[5] = filterType;
+
+            // ➕  filterFromId 
+            configMessage[6] = (byte)(filterFromId & 0xFF);
+            configMessage[7] = (byte)((filterFromId >> 8) & 0xFF);
+            configMessage[8] = (byte)((filterFromId >> 16) & 0xFF);
+            configMessage[9] = (byte)((filterFromId >> 24) & 0xFF);
+
+            // ➕  filterToId 
+            configMessage[10] = (byte)(filterToId & 0xFF);
+            configMessage[11] = (byte)((filterToId >> 8) & 0xFF);
+            configMessage[12] = (byte)((filterToId >> 16) & 0xFF);
+            configMessage[13] = (byte)((filterToId >> 24) & 0xFF);
 
             _canService.SendFrame(configMessage, HID_OUTPUT_REPORT_ID);
             Debug.WriteLine("Sent CAN Config message (Payload): " + BitConverter.ToString(configMessage));

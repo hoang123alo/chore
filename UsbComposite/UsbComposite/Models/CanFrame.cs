@@ -12,6 +12,7 @@ namespace UsbComposite.Models
     public class CanFrame : INotifyPropertyChanged
     {
 
+
         public enum CanFrameType
         {
             Standard,
@@ -22,7 +23,39 @@ namespace UsbComposite.Models
         public IEnumerable<BindableByte> VisibleDataBytes => DataBytesHex.Take(Dlc);
         private bool _isCyclic;
 
-        public string CanId { get; set; } = "000";
+        private string _canId = "000";
+        public string CanId
+        {
+            get => _canId;
+            set
+            {
+                string input = (value ?? "").Trim().ToUpper();
+
+                // Bỏ "0x" nếu có
+                if (input.StartsWith("0X"))
+                    input = input.Substring(2);
+
+                // Mặc định fallback
+                string fallback = FrameType == CanFrameType.Standard ? "7FF" : "1FFFFFFF";
+
+                // Thử parse
+                if (!uint.TryParse(input, System.Globalization.NumberStyles.HexNumber, null, out uint id))
+                {
+                    _canId = fallback;
+                }
+                else
+                {
+                    if (FrameType == CanFrameType.Standard && id > 0x7FF)
+                        _canId = "7FF";
+                    else if (FrameType == CanFrameType.Extended && id > 0x1FFFFFFF)
+                        _canId = "1FFFFFFF";
+                    else
+                        _canId = id.ToString("X"); // Ghi lại theo chuẩn Hex (viết hoa)
+                }
+
+                OnPropertyChanged(nameof(CanId));
+            }
+        }
 
         private byte _dlc = 8;
 
@@ -79,21 +112,40 @@ namespace UsbComposite.Models
             }
         }
 
-
+        private string _cycleTimeMsReceived = "0";
+        public string CycleTimeMsReceived
+        {
+            get => _cycleTimeMsReceived;
+            set
+            {
+                _cycleTimeMsReceived = value;
+                OnPropertyChanged(nameof(CycleTimeMsReceived));
+            }
+        }
 
 
         // public int CycleTimeMs { get; set; } = 1000;
-        private int _cycleTimeMs = 1000;
-        public int CycleTimeMs
+        private string _cycleTimeMs = "1000";
+        public string CycleTimeMs
         {
-            get { return _cycleTimeMs; }
+            get => _cycleTimeMs;
             set
             {
-                if (_cycleTimeMs != value)
+                var input = (value ?? "").Trim();
+
+                if (int.TryParse(input, out int result))
                 {
-                    _cycleTimeMs = value;
-                    OnPropertyChanged(nameof(CycleTimeMs));
+                    if (result >= 5 && result <= 500000)
+                        _cycleTimeMs = result.ToString();
+                    else
+                        _cycleTimeMs = "1000"; // ngoài giới hạn
                 }
+                else
+                {
+                    _cycleTimeMs = "1000"; // sai kiểu
+                }
+
+                OnPropertyChanged(nameof(CycleTimeMs));
             }
         }
 
@@ -162,7 +214,7 @@ namespace UsbComposite.Models
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name) =>
+        public void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
