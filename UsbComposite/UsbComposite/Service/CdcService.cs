@@ -23,10 +23,11 @@ namespace UsbComposite.Service
         private Timer _flushTimer;
 
         // ✅ Cấu hình giới hạn
-        private const int MaxBufferSize = 65536;     // Max RAM giữ lại (64KB)
-        private const int MaxFlushSize = 4096;       // Max mỗi lần gửi lên UI (4KB)
-                                                     // private const int MaxBufferSize = 40000;     // Max RAM giữ lại (64KB)
-                                                     //private const int MaxFlushSize = 2000;       // Max mỗi lần gửi lên UI (4KB)
+        private const int MaxBufferSize = 32*1024;     // Max RAM giữ lại (64KB)
+        private const int MaxFlushSize = 2*1024;       // Max mỗi lần gửi lên UI (4KB)
+
+
+
 
         public bool IsOpen => _port?.IsOpen ?? false;
 
@@ -100,7 +101,7 @@ namespace UsbComposite.Service
                 LogConnection($"[ERROR] Close comport FAILED: {ex.Message}");
             }
         }
-
+        /*
         private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -122,7 +123,7 @@ namespace UsbComposite.Service
                         // ✅ Nếu buffer vượt ngưỡng → cắt đầu đi để giải phóng RAM
                         if (_dataBuffer.Length > MaxBufferSize)
                         {
-                            _dataBuffer.Remove(0, _dataBuffer.Length - MaxBufferSize / 2); // Giữ lại 50%
+                            _dataBuffer.Remove(0, _dataBuffer.Length/2);// - MaxBufferSize / 10); // Giữ lại 50%
                         }
                     }
                 }
@@ -135,6 +136,44 @@ namespace UsbComposite.Service
                 }
             }
         }
+        
+        */
+        private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                int bytesToRead = _port.BytesToRead;
+                if (bytesToRead <= 0) return;
+
+                byte[] buffer = new byte[bytesToRead];
+                int bytesRead = _port.Read(buffer, 0, bytesToRead);
+
+                if (bytesRead > 0)
+                {
+                    // Chuyển trực tiếp bytes -> char array
+                    char[] chars = Encoding.UTF8.GetChars(buffer, 0, bytesRead);
+
+                    lock (_bufferLock)
+                    {
+                        _dataBuffer.Append(chars);
+
+                        // Nếu buffer vượt ngưỡng → cắt đi một nửa để giải phóng RAM
+                        if (_dataBuffer.Length > MaxBufferSize)
+                        {
+                            _dataBuffer.Remove(0, _dataBuffer.Length / 2); // giữ lại nửa sau
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lock (_bufferLock)
+                {
+                    _dataBuffer.Append($"[ERR] {ex.Message}\r\n");
+                }
+            }
+        }
+        
 
         private void FlushDataToUI(object state)
         {

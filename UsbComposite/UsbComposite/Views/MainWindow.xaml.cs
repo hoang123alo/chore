@@ -24,8 +24,13 @@ namespace UsbComposite.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-       public readonly MainViewModel _mainViewModel;
+        public readonly MainViewModel _mainViewModel;
         private string[] _lastPortNames = Array.Empty<string>();
+
+        // 🔹 Tạo các View private để tái sử dụng
+        private ConnectDeviceView _connectDeviceView;
+        private UsbHidCanView _usbHidCanView;
+        private UsbComportView _usbComportView;
 
         public MainWindow()
         {
@@ -33,10 +38,17 @@ namespace UsbComposite.Views
 
             // Tạo MainViewModel
             _mainViewModel = new MainViewModel();
-            this.DataContext = _mainViewModel; 
-                                               
-            
+            this.DataContext = _mainViewModel;
+
+            // 🔹 Khởi tạo các View 1 lần duy nhất
+            _connectDeviceView = new ConnectDeviceView();
+            _usbHidCanView = new UsbHidCanView(_mainViewModel);
+            _usbComportView = new UsbComportView(_mainViewModel);
+
+            // Mặc định hiển thị tab đầu tiên nếu cần
+            MainContentArea.Content = _connectDeviceView;
         }
+
         private void SidebarTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SidebarTabControl.SelectedIndex == -1)
@@ -45,13 +57,13 @@ namespace UsbComposite.Views
             switch (SidebarTabControl.SelectedIndex)
             {
                 case 0:
-                    MainContentArea.Content = new ConnectDeviceView();
+                    MainContentArea.Content = _connectDeviceView;
                     break;
                 case 1:
-                    MainContentArea.Content = new UsbHidCanView( _mainViewModel );
+                    MainContentArea.Content = _usbHidCanView;
                     break;
                 case 2:
-                    MainContentArea.Content = new UsbComportView(_mainViewModel);
+                    MainContentArea.Content = _usbComportView;
                     break;
                 case 3:
                     MainContentArea.Content = new TextBlock { Text = "Thông tin thiết bị", FontSize = 16 };

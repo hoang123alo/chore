@@ -13,6 +13,7 @@ using UsbComposite.Service;
 using System.Collections.Generic;
 using UsbComposite.Helpers;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace UsbComposite.Viewmodels
 {
@@ -59,7 +60,6 @@ namespace UsbComposite.Viewmodels
         public ObservableCollection<StopBits> StopBitsOptions { get; } = new ObservableCollection<StopBits>
                 {
                     StopBits.One,
-                    StopBits.OnePointFive,
                     StopBits.Two
                 };
 
@@ -67,7 +67,7 @@ namespace UsbComposite.Viewmodels
 
         // Thay đổi: truyền 1 chuỗi lớn để append TextBox
 
-        private const int MaxLines = 10000;
+        private const int MaxLines = 500;
 
         public ObservableCollection<string> ReceiveLines { get; } = new ObservableCollection<string>();
         private readonly List<string> _fullLog = new List<string>(); // lưu toàn bộ log
@@ -94,7 +94,7 @@ namespace UsbComposite.Viewmodels
 
         public ICommand SendCommand { get; }
 
-        public event Action AutoScrollRequest;
+      //  public event Action AutoScrollRequest;
 
         private bool _isSerialOpen;
         public bool IsSerialOpen
@@ -187,7 +187,7 @@ namespace UsbComposite.Viewmodels
 
             _uiUpdateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(30)
+                Interval = TimeSpan.FromMilliseconds(5)
             };
             _uiUpdateTimer.Tick += UiUpdateTimer_Tick;
             _uiUpdateTimer.Start();
@@ -350,6 +350,9 @@ namespace UsbComposite.Viewmodels
 
             // Cập nhật log và collection
             _fullLog.Add(formatted);
+            // while (_fullLog.Count > MaxLines)
+            //   _fullLog.RemoveAt(0);
+
 
             // Nếu bạn dùng ObservableCollection<string> để hiển thị từng dòng, 
             // bạn có thể thêm từng chunk làm một dòng, hoặc thêm toàn bộ chuỗi một dòng.
@@ -357,15 +360,18 @@ namespace UsbComposite.Viewmodels
             ReceiveLines.Add(formatted);
 
             // Giới hạn số dòng
-            while (ReceiveLines.Count > MaxLines)
-                ReceiveLines.RemoveAt(0);
+           // while (ReceiveLines.Count > MaxLines)
+           //    ReceiveLines.RemoveAt(0);
+
 
             // Gửi sự kiện cập nhật UI
+
             NewLinesReceived?.Invoke(formatted);
 
 
-            AutoScrollRequest?.Invoke();
+            //AutoScrollRequest?.Invoke();
         }
+
 
         public void SendFile(string filePath)
         {
@@ -440,6 +446,7 @@ namespace UsbComposite.Viewmodels
         {
             ConnectionLogs.Add($"[{DateTime.Now:HH:mm:ss}] {msg}");
         }
+
 
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -429,11 +429,13 @@
 
                     <!-- Dùng Grid để TextBox tự động chiếm hết -->
                     <Grid>
-                        <TextBox x:Name="txtReceiveLog"
+                        
+                                <TextBox x:Name="txtReceiveLog"
                        Margin="5"
                      FontSize="12"
                      Foreground="#262626"
                      IsReadOnly="True"
+                               IsUndoEnabled="False" 
                      TextWrapping="NoWrap"
                      VerticalScrollBarVisibility="Auto"
                      HorizontalScrollBarVisibility="Auto"
@@ -443,7 +445,25 @@
                      BorderThickness="0"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch"/>
-                    </Grid>
+                        
+                        <!--
+                                <TextBox x:Name="txtReceiveLog"
+         Margin="5"
+         FontSize="12"
+         Foreground="#262626"
+         IsReadOnly="True"
+         IsUndoEnabled="False"
+         TextWrapping="NoWrap"
+         VerticalScrollBarVisibility="Auto"
+         HorizontalScrollBarVisibility="Auto"
+         AcceptsReturn="True"
+         AcceptsTab="True"
+         Background="{x:Null}"
+         BorderThickness="0"
+         HorizontalAlignment="Stretch"
+         VerticalAlignment="Stretch"
+         Text="{Binding CdcVM.ReceiveLog, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" /> -->
+                            </Grid>
 
                 </GroupBox>
             </Border>

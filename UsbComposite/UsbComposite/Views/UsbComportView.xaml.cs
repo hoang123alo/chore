@@ -19,8 +19,12 @@ namespace UsbComposite.Views
     /// <summary>
     /// Interaction logic for UsbComportView.xaml
     /// </summary>
+   
     public partial class UsbComportView : UserControl
     {
+
+
+
         private readonly MainViewModel _mainViewModel;
         public UsbComportView(MainViewModel viewModel)
         {
@@ -34,14 +38,6 @@ namespace UsbComposite.Views
                 _mainViewModel.CdcVM.SelectedDisplayMode = selected;
             };
             
-
-            _mainViewModel.CdcVM.AutoScrollRequest += () =>
-            {
-                txtReceiveLog.Dispatcher.InvokeAsync(() =>
-                {
-                    txtReceiveLog.ScrollToEnd();
-                }, DispatcherPriority.Background);
-            };
 
 
 

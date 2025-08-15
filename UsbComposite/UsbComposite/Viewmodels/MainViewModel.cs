@@ -15,6 +15,7 @@ namespace UsbComposite.Viewmodels
         public MainViewModel()
         {
             CdcVM = new CdcViewModel(new CdcService());
+
             CanVM = new CanViewModel();
         }
     }
