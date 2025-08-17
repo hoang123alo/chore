@@ -24,13 +24,13 @@ namespace UsbComposite.Service
         public event Action<byte[]> FrameReceived;
 
         public event Action Disconnected;
-        // Bổ sung phương thức để lấy kích thước payload của HID report (nếu cần)
+        
         public int GetHidReportPayloadSize()
         {
-            // Nếu bạn muốn lấy từ Capabilities, hãy đảm bảo _device đã được mở
-            // return _device?.Capabilities.OutputReportByteLength ?? HID_REPORT_PAYLOAD_SIZE;
-            return HID_REPORT_PAYLOAD_SIZE; // Hiện tại dùng const
+            return HID_REPORT_PAYLOAD_SIZE; 
         }
+        
+
         public bool Connect()
         {
             var list = DeviceList.Local;
@@ -82,19 +82,8 @@ namespace UsbComposite.Service
             {
                 System.Diagnostics.Debug.WriteLine($"IO Exception: {ex.Message}");
                 Disconnected?.Invoke();
-               // MessageBox.Show($"Tôi đã tính tới trường hợp này rồi !!! kết nối lại thiết bị đi  ");
                 return false;
             }
-            /*
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Other exception: {ex.Message}");
-                Disconnected?.Invoke();
-                MessageBox.Show($"Tôi đã tính tới trường hợp này rồi !!! kết nối lại thiết bị đi ");
-
-                return false;
-            }
-            */
         }
 
         public bool SendFrame(byte[] data)
@@ -134,12 +123,12 @@ namespace UsbComposite.Service
                             Array.Copy(buffer, 1, received, 0, bytesRead - 1);
 
                             FrameReceived?.Invoke(received);
-                            Console.WriteLine($"✅ FrameReceived invoked, CMD: {received[0]:X2}");
+                          //  Console.WriteLine($"✅ FrameReceived invoked, CMD: {received[0]:X2}");
                         }
                         else
                         {
                             // Không đọc được gì, có thể thiết bị ngắt kết nối
-                            System.Diagnostics.Debug.WriteLine("⚠️ No data received, possible disconnect.");
+                            // System.Diagnostics.Debug.WriteLine("⚠️ No data received, possible disconnect.");
                         }
                     }
                     catch (IOException ex)

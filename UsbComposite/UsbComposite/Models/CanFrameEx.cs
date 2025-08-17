@@ -29,6 +29,19 @@ public class CanFrameEx : CanFrame
             OnPropertyChanged(nameof(CycleTimeMsDisplay));
         }
     }
+    private int _count = 1; // mặc định là 1 khi frame mới xuất hiện
+    public int Count
+    {
+        get => _count;
+        set
+        {
+            if (_count != value)
+            {
+                _count = value;
+                OnPropertyChanged(nameof(Count));
+            }
+        }
+    }
 
     //public string CycleTimeMsDisplay => $"{CycleTimeMsInt} ms";
     public string CycleTimeMsDisplay => $"{CycleTimeMsInt / 1.0:F1}";
@@ -61,7 +74,7 @@ public class CanFrameEx : CanFrame
         CycleTimeMsInt = calculatedCycle;
     }
 
-
+    /*
     public uint CanIdAsUInt
     {
         get
@@ -75,6 +88,31 @@ public class CanFrameEx : CanFrame
             return 0;
         }
     }
+    */
+    public uint CanIdAsUInt
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(CanId))
+                return 0;
+
+            // Bỏ "0x", parse hex
+            var s = CanId.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+                        ? CanId.Substring(2)
+                        : CanId;
+
+            if (uint.TryParse(s, System.Globalization.NumberStyles.HexNumber, null, out uint val))
+            {
+                if (FrameType == CanFrameType.Standard)
+                    return val & 0x7FF;        // 11-bit
+                else
+                    return val & 0x1FFFFFFF;   // 29-bit
+            }
+
+            return 0;
+        }
+    }
+
 
 
 

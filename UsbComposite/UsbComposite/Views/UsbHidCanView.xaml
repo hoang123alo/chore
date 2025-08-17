@@ -520,7 +520,14 @@
                                 </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
 
-
+                                <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
 
 
                             </DataGrid.Columns>

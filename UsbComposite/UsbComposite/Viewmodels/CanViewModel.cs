@@ -173,7 +173,7 @@ namespace UsbComposite.Viewmodels
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (IsConnected)  // Tránh set nhiều lần
+                    if (IsConnected)  
                     {
                         IsConnected = false;
                         Debug.WriteLine("Device disconnected due to SendFrame error.");
@@ -326,82 +326,88 @@ namespace UsbComposite.Viewmodels
 
             byte rawInfo = data[1];
             byte dlc = (byte)((rawInfo >> 4) & 0x0F);
-            bool isExtended = (rawInfo & 0x04) != 0;
+            bool isExtended = (rawInfo & 0x04) != 0; // Nếu MCU dùng bit khác cho IDE, đổi lại cho đúng
 
             if (data.Length < 6 + dlc + 4)
                 return;
 
-            uint canId = ((uint)data[2] << 24) |
+            // Đọc CAN ID 32-bit từ MCU
+            uint rawId = ((uint)data[2] << 24) |
                          ((uint)data[3] << 16) |
                          ((uint)data[4] << 8) |
                          data[5];
 
+            // Mask ID theo loại frame
+            uint canId;
+            string idFormatted;
+            if (isExtended)
+            {
+                canId = rawId & 0x1FFFFFFF;       // Extended 29-bit
+                idFormatted = $"0x{canId:X}";     // Hiển thị gọn
+            }
+            else
+            {
+                canId = rawId & 0x7FF;            // Standard 11-bit
+                idFormatted = $"0x{canId:X}";     // Hiển thị gọn
+            }
+
+            var frameType = isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard;
+
+            // Payload
             byte[] payload = new byte[dlc];
             Array.Copy(data, 6, payload, 0, dlc);
 
+            // Timestamp từ MCU
             uint rawCycle = ((uint)data[14] << 24) |
                             ((uint)data[15] << 16) |
                             ((uint)data[16] << 8) |
                             data[17];
 
-            string idFormatted = isExtended
-                ? $"0x{canId:X8}"
-                : $"0x{(canId & 0x7FF):X3}";
+            // Log debug
+           // Debug.WriteLine($"[CAN RX] ID={idFormatted}, Extended={isExtended}, rawId=0x{rawId:X8}, DLC={dlc}");
 
-            // Tìm frame đã tồn tại dựa trên CAN ID và FrameType
-            var existingFrame = ReceivedFrames.FirstOrDefault(f =>
-                (f as CanFrameEx)?.CanIdAsUInt == canId &&
-                f.FrameType == (isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard));
+            // Tìm frame đã tồn tại (so sánh bằng CanIdAsUInt)
+            var existingEx = ReceivedFrames
+                .OfType<CanFrameEx>()
+                .FirstOrDefault(f => f.CanIdAsUInt == canId && f.FrameType == frameType);
 
-            if (existingFrame != null && existingFrame is CanFrameEx existingEx)
+            if (existingEx != null)
             {
-                // Kiểm tra dữ liệu mới có khác với dữ liệu cũ không
-                bool isDataChanged = existingEx.Dlc != dlc ||
-                                     !existingEx.DataBytesHex.Select(b => b.Value)
-                                        .SequenceEqual(payload.Select(b => b.ToString("X2")));
+                bool isDataChanged =
+                    existingEx.Dlc != dlc ||
+                    !existingEx.DataBytesHex.Select(b => b.Value)
+                        .SequenceEqual(payload.Select(b => b.ToString("X2")));
 
                 if (isDataChanged)
-                {
                     existingEx.UpdateData(payload, dlc);
 
-                    // Tính diff trên giá trị cũ trước khi cập nhật
-                    long diff = (long)rawCycle - (long)existingEx.LastTimestampFromMcu;
-                    if (diff < 0)
-                        diff += 0x100000000;
+                // 🔹 Tăng count khi nhận frame trùng ID + FrameType
+                existingEx.Count += 1;
 
-                    existingEx.CycleTimeMsInt = (diff / 10.0);
+                // Tính cycle time
+                long diff = (long)rawCycle - (long)existingEx.LastTimestampFromMcu;
+                if (diff < 0) diff += 0x1_0000_0000; // overflow 32-bit
+                existingEx.CycleTimeMsInt = diff / 10.0;
+                existingEx.LastTimestampFromMcu = rawCycle;
 
-                    // Cập nhật timestamp mới
-                    existingEx.LastTimestampFromMcu = rawCycle;
-                }
-                else
-                {
-                    long diff = (long)rawCycle - (long)existingEx.LastTimestampFromMcu;
-                    if (diff < 0)
-                        diff += 0x100000000;
-
-                    existingEx.CycleTimeMsInt = (diff / 10.0);
-
-                    existingEx.LastTimestampFromMcu = rawCycle;
-                }
-
-
+                // Cập nhật UI
                 existingEx.Timestamp = DateTime.Now;
                 existingEx.OnPropertyChanged(nameof(existingEx.Timestamp));
                 existingEx.OnPropertyChanged(nameof(existingEx.CycleTimeMsDisplay));
             }
             else
             {
-                // Nếu là frame mới chưa có trong ReceivedFrames
+                // ⚠️ GÁN THỨ TỰ: FrameType TRƯỚC, CanId SAU
                 var newFrame = new CanFrameEx
                 {
                     Timestamp = DateTime.Now,
-                    CanId = idFormatted,
-                    FrameType = isExtended ? CanFrame.CanFrameType.Extended : CanFrame.CanFrameType.Standard,
+                    FrameType = frameType,
                     LastTimestampFromMcu = rawCycle,
-                    CycleTimeMsInt = 1000,
+                    CycleTimeMsInt = 1000,      // Mặc định
+                    Count = 1
                 };
 
+                newFrame.CanId = idFormatted;     // Gán sau khi đã có FrameType
                 newFrame.UpdateData(payload, dlc);
 
                 Application.Current.Dispatcher.Invoke(() =>
@@ -410,8 +416,6 @@ namespace UsbComposite.Viewmodels
                 });
             }
         }
-
-
 
         private void UiUpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -422,39 +426,46 @@ namespace UsbComposite.Viewmodels
                 var frame = _frameBuffer.Dequeue();
                 processed++;
 
+                // 🔹 So sánh bằng CanIdAsUInt + FrameType
                 var existing = ReceivedFrames.FirstOrDefault(f =>
-                    f.CanId == frame.CanId &&
+                    f.CanIdAsUInt == frame.CanIdAsUInt &&
                     f.FrameType == frame.FrameType);
 
-                if (existing != null && existing is CanFrameEx existingEx && frame is CanFrameEx newEx)
+                if (existing is CanFrameEx existingEx && frame is CanFrameEx newEx)
                 {
-                    // So sánh data và DLC có khác không
+                    // ⚠️ GÁN THỨ TỰ: FrameType TRƯỚC, CanId SAU
+                    existingEx.FrameType = newEx.FrameType;
+                    existingEx.CanId = newEx.CanId;
+
                     bool isDataDifferent = existingEx.Dlc != newEx.Dlc ||
-                                           !existingEx.DataBytesHex.Select(b => b.Value).SequenceEqual(newEx.DataBytesHex.Select(b => b.Value));
+                                           !existingEx.DataBytesHex.Select(b => b.Value)
+                                               .SequenceEqual(newEx.DataBytesHex.Select(b => b.Value));
 
                     if (isDataDifferent)
                     {
-                        // Cập nhật DLC và data dùng hàm chuyên biệt
-                        existingEx.UpdateData(newEx.DataBytesHex.Select(b => Convert.ToByte(b.Value, 16)).ToArray(), newEx.Dlc);
+                        existingEx.UpdateData(
+                            newEx.DataBytesHex.Select(b => Convert.ToByte(b.Value, 16)).ToArray(),
+                            newEx.Dlc
+                        );
                     }
 
-                    // Luôn cập nhật cycle time từ giá trị trong newEx (đã được tính đúng trong OnFrameReceived)
                     existingEx.CycleTimeMsInt = newEx.CycleTimeMsInt;
-
-                    // Cập nhật thời gian nhận frame
                     existingEx.Timestamp = newEx.Timestamp;
 
+                    existingEx.OnPropertyChanged(nameof(existingEx.CanId));
                     existingEx.OnPropertyChanged(nameof(existingEx.CycleTimeMsDisplay));
                     existingEx.OnPropertyChanged(nameof(existingEx.Timestamp));
+                    existingEx.Count += 1;
                 }
                 else
                 {
-                    // Thêm frame mới
                     ReceivedFrames.Add(frame);
                     ScrollToLatestFrame?.Invoke();
                 }
             }
         }
+
+
 
 
 
@@ -466,7 +477,7 @@ namespace UsbComposite.Viewmodels
         {
             if (!_canService.IsConnected)
             {
-                Debug.WriteLine("Không thể gửi cấu hình: Dịch vụ HID chưa kết nối.");
+             //   Debug.WriteLine("Không thể gửi cấu hình: Dịch vụ HID chưa kết nối.");
                 MessageBox.Show("Thiết bị đâu ???");
                 return;
             }
